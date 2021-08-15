@@ -1,0 +1,2 @@
+rootProject.name='KSAndroidPlayerDemo'
+include ':app'
