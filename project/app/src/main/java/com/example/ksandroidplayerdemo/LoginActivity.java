@@ -118,6 +118,9 @@ public class LoginActivity extends AppCompatActivity{
     private String readPsw(String userName){
         //getSharedPreferences("loginInfo",MODE_PRIVATE);
         //"loginInfo",mode_private; MODE_PRIVATE表示可以继续写入
+        //修改为与后端通信
+
+
         SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
         //sp.getString() userName, "";
         return sp.getString(userName , "");
