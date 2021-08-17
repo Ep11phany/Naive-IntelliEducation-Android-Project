@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ksandroidplayerdemo.utils.MD5Utils;
+import com.example.ksandroidplayerdemo.utils.HttpUtils;
 
 public class LoginActivity extends AppCompatActivity{
     private TextView tv_main_title;//标题
@@ -118,9 +119,7 @@ public class LoginActivity extends AppCompatActivity{
     private String readPsw(String userName){
         //getSharedPreferences("loginInfo",MODE_PRIVATE);
         //"loginInfo",mode_private; MODE_PRIVATE表示可以继续写入
-        //修改为与后端通信
-
-
+        //修改为与后端通信q
         SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
         //sp.getString() userName, "";
         return sp.getString(userName , "");

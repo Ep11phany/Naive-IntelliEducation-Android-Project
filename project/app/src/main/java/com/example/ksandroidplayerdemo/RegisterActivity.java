@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.ksandroidplayerdemo.utils.MD5Utils;
+import com.example.ksandroidplayerdemo.utils.HttpUtils;
 
 public class RegisterActivity extends AppCompatActivity {
     private TextView tv_main_title;//标题
@@ -76,9 +77,6 @@ public class RegisterActivity extends AppCompatActivity {
                     /**
                      *从SharedPreferences中读取输入的用户名，判断SharedPreferences中是否有此用户名
                      */
-                }else if(isExistUserName(userName)){
-                    Toast.makeText(RegisterActivity.this, "此账户名已经存在", Toast.LENGTH_SHORT).show();
-                    return;
                 }else{
                     Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                     //把账号、密码和账号标识保存到sp里面
@@ -109,25 +107,13 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * 从SharedPreferences中读取输入的用户名，判断SharedPreferences中是否有此用户名
      */
-    private boolean isExistUserName(String userName){
-        boolean has_userName=false;
-        //mode_private SharedPreferences sp = getSharedPreferences( );
-        // "loginInfo", MODE_PRIVATE
-        SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
-        //获取密码
-        String spPsw=sp.getString(userName, "");//传入用户名获取密码
-        //如果密码不为空则确实保存过这个用户名
-        if(!TextUtils.isEmpty(spPsw)) {
-            has_userName=true;
-        }
-        return has_userName;
-    }
     /**
      * 保存账号和密码到SharedPreferences中SharedPreferences
      */
     private void saveRegisterInfo(String userName,String psw){
         String md5Psw = MD5Utils.md5(psw);//把密码用MD5加密
         //loginInfo表示文件名, mode_private SharedPreferences sp = getSharedPreferences( );
+        HttpUtils.sendPostMessage("{"+"name:"+userName+","+"email:12345@qq.com,"+"password:"+psw+"}","UTF-8");
         SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
         //获取编辑器， SharedPreferences.Editor  editor -> sp.edit();
         SharedPreferences.Editor editor=sp.edit();
