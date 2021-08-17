@@ -15,6 +15,9 @@ import android.widget.Toast;
 import com.example.ksandroidplayerdemo.utils.MD5Utils;
 import com.example.ksandroidplayerdemo.utils.HttpUtils;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class RegisterActivity extends AppCompatActivity {
     private TextView tv_main_title;//标题
     private TextView tv_back;//返回按钮
@@ -77,13 +80,15 @@ public class RegisterActivity extends AppCompatActivity {
                     /**
                      *从SharedPreferences中读取输入的用户名，判断SharedPreferences中是否有此用户名
                      */
-                }else{
-                    Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                }
+                String sri=saveRegisterInfo(userName, psw);
+                if(sri!=""){
+                    Toast.makeText(RegisterActivity.this, sri, Toast.LENGTH_SHORT).show();
                     //把账号、密码和账号标识保存到sp里面
                     /**
                      * 保存账号和密码到SharedPreferences中
                      */
-                    saveRegisterInfo(userName, psw);
+
                     //注册成功后把账号传递到LoginActivity.java中
                     // 返回值到loginActivity显示
                     Intent data = new Intent();
@@ -110,10 +115,10 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * 保存账号和密码到SharedPreferences中SharedPreferences
      */
-    private void saveRegisterInfo(String userName,String psw){
+    private String saveRegisterInfo(String userName,String psw){
         String md5Psw = MD5Utils.md5(psw);//把密码用MD5加密
         //loginInfo表示文件名, mode_private SharedPreferences sp = getSharedPreferences( );
-        HttpUtils.sendPostMessage("{"+"name:"+userName+","+"email:12345@qq.com,"+"password:"+psw+"}","UTF-8");
+
         SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
         //获取编辑器， SharedPreferences.Editor  editor -> sp.edit();
         SharedPreferences.Editor editor=sp.edit();
@@ -122,5 +127,6 @@ public class RegisterActivity extends AppCompatActivity {
         editor.putString(userName, md5Psw);
         //提交修改 editor.commit();
         editor.commit();
+        return HttpUtils.sendPostMessage("{"+"name:"+userName+","+"email:12345@qq.com,"+"password:"+psw+"}","UTF-8");
     }
 }

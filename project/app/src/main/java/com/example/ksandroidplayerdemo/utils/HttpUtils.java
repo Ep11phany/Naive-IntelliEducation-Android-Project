@@ -1,4 +1,8 @@
 package com.example.ksandroidplayerdemo.utils;
+import android.widget.Toast;
+
+import com.example.ksandroidplayerdemo.RegisterActivity;
+
 import java.io.*;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -12,7 +16,7 @@ import java.util.Map;
 
 public class HttpUtils {
 
-    private static String PATH = "";
+    private static String PATH = "localhost::8080/api/reg";
     private static URL url;
     public HttpUtils() {}
 
@@ -60,7 +64,6 @@ public class HttpUtils {
             //"{userName:zhangsan,password:123456}"
             writer.write(body);
             writer.close();
-
             int responseCode = connection.getResponseCode();
             if(responseCode == HttpURLConnection.HTTP_OK) {
                 InputStream inputStream = connection.getInputStream();
