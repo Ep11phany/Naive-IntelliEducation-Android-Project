@@ -1,7 +1,6 @@
 package com.example.ksandroidplayerdemo.utils;
-import android.widget.Toast;
 
-import com.example.ksandroidplayerdemo.RegisterActivity;
+import org.json.JSONObject;
 
 import java.io.*;
 import java.io.UnsupportedEncodingException;
@@ -9,14 +8,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import java.util.HashMap;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
-
 
 
 public class HttpUtils {
 
-    private static String PATH = "localhost::8080/api/reg";
+    private static String PATH = "http://172.29.0.1:8080/api/reg";
     private static URL url;
     public HttpUtils() {}
 
@@ -51,8 +51,27 @@ public class HttpUtils {
         return result;
     }
 
-    public static String sendPostMessage(String body,String encode){
+    public static String sendPostMessage(Map<String,String> params, String encode){
         try {//把请求的主体写入正文！！
+        StringBuilder data=new StringBuilder();
+            if(params!=null&&!params.isEmpty()){
+                for(Map.Entry<String, String >entry :params.entrySet()){
+                    data.append(entry.getKey()).append("=");
+                    data.append(URLEncoder.encode(entry.getValue(),encode));
+                    data.append("&");
+                }
+                data.deleteCharAt(data.length()-1);
+            }
+            byte[]entity=data.toString().getBytes();
+            HttpURLConnection conn=(HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setRequestProperty("Content-Length",String.valueOf(entity.length));
+            OutputStream outStream =conn.getOutputStream();
+            outStream.write(entity);
+            /*
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
@@ -60,13 +79,15 @@ public class HttpUtils {
             connection.setUseCaches(false);
             connection.setRequestProperty("Content-Type", "application/json;charset=utf-8");//设置参数类型是json格式
             connection.connect();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
-            //"{userName:zhangsan,password:123456}"
-            writer.write(body);
-            writer.close();
-            int responseCode = connection.getResponseCode();
+            OutputStream writer = connection.getOutputStream();
+            Writer osw= new OutputStreamWriter(writer);
+
+            osw.write(body.);
+            System.out.println(body.toString());
+            osw.close();*/
+            int responseCode = conn.getResponseCode();
             if(responseCode == HttpURLConnection.HTTP_OK) {
-                InputStream inputStream = connection.getInputStream();
+                InputStream inputStream = conn.getInputStream();
                 String result = is2String(inputStream, "UTF-8");//将流转换为字符串。
                 return result;
             }
@@ -78,7 +99,9 @@ public class HttpUtils {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return "";
+        return "Failed";
+
+
     }
 
 }

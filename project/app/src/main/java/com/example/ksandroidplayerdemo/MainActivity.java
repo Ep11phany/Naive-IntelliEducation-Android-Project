@@ -84,6 +84,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setInitStatus();
     }
 
+
+
+
     private void initNavigation() {
         tv_back = (TextView) findViewById(R.id.tv_back);
         tv_main_title = (TextView) findViewById(R.id.tv_main_title);
