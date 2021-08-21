@@ -16,16 +16,12 @@ import java.util.Map;
 
 public class HttpUtils {
 
-    private static String PATH = "http://172.29.0.1:8080/api/reg";
-    private static URL url;
+    private static String PATH = "http://10.0.0.4:8080";
+
     public HttpUtils() {}
 
     static{
-        try {
-            url = new URL(PATH);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+
     }
 
     private static String is2String(InputStream inputStream,String encode) {
@@ -51,7 +47,13 @@ public class HttpUtils {
         return result;
     }
 
-    public static String sendPostMessage(Map<String,String> params, String encode){
+    public static String sendPostRequest(Map<String,String> params, String encode,String api){
+        URL url=null;
+        try {
+            url = new URL(PATH+api);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         try {//把请求的主体写入正文！！
         StringBuilder data=new StringBuilder();
             if(params!=null&&!params.isEmpty()){
@@ -100,8 +102,33 @@ public class HttpUtils {
             e.printStackTrace();
         }
         return "Failed";
-
-
     }
+    public static String sendGetRequest(Map<String, String> params,String ecoding,String api) {
+        try {
 
+            StringBuilder Path = new StringBuilder(PATH + api);
+            Path.append("?");
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                Path.append(entry.getKey()).append("=");
+                Path.append(URLEncoder.encode(entry.getValue(), ecoding));
+                Path.append("&");
+            }
+            Path.deleteCharAt(Path.length() - 1);
+            HttpURLConnection conn = (HttpURLConnection) new URL(Path.toString()).openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setRequestMethod("GET");
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                InputStream inputStream = conn.getInputStream();
+                String result = is2String(inputStream, "UTF-8");//将流转换为字符串。
+                return result;
+            }
+        }
+         catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+        e.printStackTrace();
+        }
+        return "Failed";
+    }
 }
