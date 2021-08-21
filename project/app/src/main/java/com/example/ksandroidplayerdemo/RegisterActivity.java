@@ -159,8 +159,8 @@ public class RegisterActivity extends AppCompatActivity {
             if (sri != "Failed") {
                 try {
                     JSONObject jo = new JSONObject(sri);
-                    String a = jo.get("msg").toString();
-                    if (a.equals("Success!")) {
+                    String MSG = jo.get("msg").toString();
+                    if (MSG.equals("Success!")) {
                         //把账号、密码和账号标识保存到sp里面
                         /**
                          * 保存账号和密码到SharedPreferences中
@@ -176,6 +176,19 @@ public class RegisterActivity extends AppCompatActivity {
                                 try{
                                     Thread.sleep(1000);
                                     activity.finish();
+                                } catch (Exception e) {
+                                }
+                            }
+                        }).start();
+                    }
+                    else if(MSG.equals("Name Duplicated!")){
+                        activity.tv_hint.setText("注册失败，用户名重复");
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    Thread.sleep(3000);
+                                    activity.tv_hint.setText("");
                                 } catch (Exception e) {
                                 }
                             }

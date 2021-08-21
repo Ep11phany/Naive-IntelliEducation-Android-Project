@@ -31,7 +31,7 @@ import java.lang.ref.WeakReference;
 
 public class LoginActivity extends AppCompatActivity{
     private TextView tv_main_title;//标题
-    private TextView tv_back,tv_register,tv_find_psw;//返回键,显示的注册，找回密码
+    private TextView tv_back,tv_register,tv_find_psw,tv_hint;//返回键,显示的注册，找回密码
     private Button btn_login;//登录按钮
     private String userName,psw,spPsw;//获取的用户名，密码，加密密码
     private EditText et_user_name,et_psw;//编辑框
@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity{
         //从activity_login.xml中获取的
         tv_register=findViewById(R.id.tv_register);
         tv_find_psw=findViewById(R.id.tv_find_psw);
-
+        tv_hint=findViewById(R.id.tv_hint);
         btn_login=findViewById(R.id.btn_login);
         et_user_name=findViewById(R.id.et_user_name);
         et_psw=findViewById(R.id.et_psw);
@@ -179,9 +179,8 @@ public class LoginActivity extends AppCompatActivity{
             if(sri!="Failed"){
                 try {
                     JSONObject jo = new JSONObject(sri);
-                    String a=jo.get("msg").toString();
-                    if(a.equals("Success!")){
-
+                    String MSG=jo.get("msg").toString();
+                    if(MSG.equals("Success!")){
                         //保存登录状态，在界面保存登录的用户名 定义个方法 saveLoginStatus boolean 状态 , userName 用户名;
                         activity.saveLoginStatus(true, ui.Username);
                         //登录成功后关闭此页面进入主页
@@ -197,6 +196,32 @@ public class LoginActivity extends AppCompatActivity{
                         activity.startActivity(new Intent(activity, MainActivity.class));
                         return;
 
+                    }
+                    else if(MSG.equals("User not found!")){
+                        activity.tv_hint.setText("用户名无效");
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    Thread.sleep(3000);
+                                    activity.tv_hint.setText("");
+                                } catch (Exception e) {
+                                }
+                            }
+                        }).start();
+                    }
+                    else if(MSG.equals("Wrong Password!")){
+                        activity.tv_hint.setText("用户名或密码错误");
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    Thread.sleep(3000);
+                                    activity.tv_hint.setText("");
+                                } catch (Exception e) {
+                                }
+                            }
+                        }).start();
                     }
                 } catch (JSONException e) {
                 }
