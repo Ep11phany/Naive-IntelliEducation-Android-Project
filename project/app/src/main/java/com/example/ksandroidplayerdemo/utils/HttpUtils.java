@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class HttpUtils {
 
-    private static String PATH = "http://10.0.0.4:8080";
+    private static String PATH = "http://10.0.0.4:8080";//localhost:8080
 
     public HttpUtils() {}
 
@@ -73,20 +73,6 @@ public class HttpUtils {
             conn.setRequestProperty("Content-Length",String.valueOf(entity.length));
             OutputStream outStream =conn.getOutputStream();
             outStream.write(entity);
-            /*
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-            connection.setDoInput(true);
-            connection.setUseCaches(false);
-            connection.setRequestProperty("Content-Type", "application/json;charset=utf-8");//设置参数类型是json格式
-            connection.connect();
-            OutputStream writer = connection.getOutputStream();
-            Writer osw= new OutputStreamWriter(writer);
-
-            osw.write(body.);
-            System.out.println(body.toString());
-            osw.close();*/
             int responseCode = conn.getResponseCode();
             if(responseCode == HttpURLConnection.HTTP_OK) {
                 InputStream inputStream = conn.getInputStream();

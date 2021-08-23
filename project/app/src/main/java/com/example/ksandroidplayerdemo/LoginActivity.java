@@ -106,8 +106,7 @@ public class LoginActivity extends AppCompatActivity{
                         public void run() {
                             try{
                                 Message msg = Message.obtain();
-                                msg.obj = new User_Info(userName,"1234@qq.com",psw);
-
+                                msg.obj = new User_Info(userName,"",psw);
                                 mHandler.handleMessage(msg);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -225,6 +224,19 @@ public class LoginActivity extends AppCompatActivity{
                     }
                 } catch (JSONException e) {
                 }
+            }
+            else{
+                activity.tv_hint.setText("网络超时，请稍后重试");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            Thread.sleep(3000);
+                            activity.tv_hint.setText("");
+                        } catch (Exception e) {
+                        }
+                    }
+                }).start();
             }
         }
     }

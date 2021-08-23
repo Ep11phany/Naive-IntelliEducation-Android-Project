@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import  androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +16,15 @@ import android.widget.Toast;
 
 import com.example.ksandroidplayerdemo.utils.AnalysisUtils;
 import com.example.ksandroidplayerdemo.utils.MD5Utils;
+import com.example.ksandroidplayerdemo.utils.HttpUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Created by Jack on 2018/4/10.
@@ -21,6 +33,8 @@ import com.example.ksandroidplayerdemo.utils.MD5Utils;
 public class ModifyPwdActivity extends AppCompatActivity {
     private TextView tv_main_title;
     private TextView tv_back;
+    private TextView tv_hint;
+    private ModifyPwdActivity.MyHandler mHandler;
     private EditText et_original_pwd;
     private EditText et_new_pwd;
     private EditText et_new_pwd_again;
@@ -35,11 +49,13 @@ public class ModifyPwdActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_pwd);
         userName = AnalysisUtils.readLoginUserName(this);
+        mHandler=new ModifyPwdActivity.MyHandler(this);
         init();
     }
     private void init() {
         tv_main_title = ((TextView) findViewById(R.id.tv_main_title));
         tv_main_title.setText("修改密码");
+        tv_hint= ((TextView) findViewById(R.id.tv_hint));
         tv_back = ((TextView) findViewById(R.id.tv_back));
         tv_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,22 +80,27 @@ public class ModifyPwdActivity extends AppCompatActivity {
                 }else if(TextUtils.isEmpty(newPwdAgain)){
                     Toast.makeText(ModifyPwdActivity.this, "请再次输入新密码", Toast.LENGTH_SHORT).show();
                     return;
-                }else if(!MD5Utils.md5(originalPwd).equals(readPwd())){
-                    Toast.makeText(ModifyPwdActivity.this, "输入密码与原始密码不一致", Toast.LENGTH_SHORT).show();
-                    return;
-                }else if(MD5Utils.md5(newPwd).equals(readPwd())){
+                }else if(MD5Utils.md5(newPwd).equals(originalPwd)){
                     Toast.makeText(ModifyPwdActivity.this, "输入新密码与原始密码不能一致", Toast.LENGTH_SHORT).show();
                     return;
                 }else if(!newPwd.equals(newPwdAgain)){
                     Toast.makeText(ModifyPwdActivity.this, "两次输入的新密码不一致", Toast.LENGTH_SHORT).show();
                     return;
                 }else{
-                    Toast.makeText(ModifyPwdActivity.this, "新密码设置成功", Toast.LENGTH_SHORT).show();
-                    modifyPwd(newPwd);
-                    Intent intent = new Intent(ModifyPwdActivity.this,LoginActivity.class);
-                    startActivity(intent);
-                    SettingActivity.instance.finish() ;//关闭设置页面 create field 'instance'
-                    ModifyPwdActivity.this.finish(); //关闭当前页面
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                Message msg = Message.obtain();
+                                User_Info ui = new User_Info(userName,"",originalPwd);
+                                ui.newPassword=newPwd;
+                                msg.obj=ui;
+                                mHandler.handleMessage(msg);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
                 }
             }
         });
@@ -93,15 +114,94 @@ public class ModifyPwdActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    private String readPwd() {
-        SharedPreferences sp = getSharedPreferences("loginInfo",MODE_PRIVATE);
-        String spPwd = sp.getString(userName, "");
-        return spPwd;
-    }
 
     private void getEditString() {
         originalPwd = et_original_pwd.getText().toString().trim();
         newPwd = et_new_pwd.getText().toString().trim();
         newPwdAgain = et_new_pwd_again.getText().toString().trim();
     }
+
+
+    private static class MyHandler extends Handler {
+        WeakReference<AppCompatActivity> reference;
+
+        public MyHandler(AppCompatActivity activity) {
+            reference = new WeakReference<>(activity);
+        }
+        public void handleMessage(Message msg) {
+            ModifyPwdActivity activity = (ModifyPwdActivity) reference.get();
+            User_Info ui=(User_Info)msg.obj;
+            Map<String,String> mp=new HashMap<String,String>();
+            mp.put("name",ui.Username);
+            mp.put("oldPassword",MD5Utils.md5(ui.Password));
+            mp.put("newPassword",MD5Utils.md5(ui.newPassword));
+            String sri=HttpUtils.sendPostRequest(mp,"UTF-8","/api/modipwd");//
+            if(sri!="Failed"){
+                try {
+                    JSONObject jo = new JSONObject(sri);
+                    String MSG=jo.get("msg").toString();
+                    if(MSG.equals("Success!")){
+                        activity.tv_hint.setText("密码修改成功");
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    Thread.sleep(3000);
+                                    activity.tv_hint.setText("");
+                                } catch (Exception e) {
+                                }
+                            }
+                        }).start();
+                        Intent intent = new Intent(activity,LoginActivity.class);
+                        activity.startActivity(intent);
+                        SettingActivity.instance.finish() ;//关闭设置页面 create field 'instance'
+                        activity.finish(); //关闭当前页面
+                    }
+                    else if(MSG.equals("User not found!")){
+                        activity.tv_hint.setText("用户名无效");
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    Thread.sleep(3000);
+                                    activity.tv_hint.setText("");
+                                } catch (Exception e) {
+                                }
+                            }
+                        }).start();
+                    }
+                    else if(MSG.equals("Password wrong!")){
+                        activity.tv_hint.setText("密码错误，请重新输入");
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    Thread.sleep(3000);
+                                    activity.tv_hint.setText("");
+                                } catch (Exception e) {
+                                }
+                            }
+                        }).start();
+                    }
+                } catch (JSONException e) {
+                }
+            }
+            else{
+                activity.tv_hint.setText("网络超时，请稍后重试");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            Thread.sleep(3000);
+                            activity.tv_hint.setText("");
+                        } catch (Exception e) {
+                        }
+                    }
+                }).start();
+            }
+        }
+    }
+
+
+
 }

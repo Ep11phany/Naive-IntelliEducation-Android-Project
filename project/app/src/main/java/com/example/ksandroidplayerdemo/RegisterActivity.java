@@ -102,7 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public void run() {
                         try{
                             Message msg = Message.obtain();
-                            msg.obj = new User_Info(userName,email,psw);
+                            msg.obj = new User_Info(userName,email,psw); //借用email传递
                             mHandler.handleMessage(msg);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -153,8 +153,8 @@ public class RegisterActivity extends AppCompatActivity {
             User_Info ui = (User_Info) msg.obj;
             Map<String, String> mp = new HashMap<String, String>();
             mp.put("name", ui.Username);
-            mp.put("email", ui.Email);
-            mp.put("password", MD5Utils.md5(ui.Password));
+            mp.put("newPassword", MD5Utils.md5(ui.Password));
+            mp.put("OldPassword", MD5Utils.md5(ui.Password));
             String sri = HttpUtils.sendPostRequest(mp, "UTF-8", "/api/reg");
             if (sri != "Failed") {
                 try {
@@ -196,6 +196,18 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                 }
+            }else{
+                activity.tv_hint.setText("网络超时，请稍后重试");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            Thread.sleep(3000);
+                            activity.tv_hint.setText("");
+                        } catch (Exception e) {
+                        }
+                    }
+                }).start();
             }
         }
     }
