@@ -1,10 +1,11 @@
 package com.example.ksandroidplayerdemo;
 
+
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
-import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,24 +14,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.example.ksandroidplayerdemo.Fragment.CourseFragment;
 import com.example.ksandroidplayerdemo.Fragment.ExercisesFragment;
 import com.example.ksandroidplayerdemo.Fragment.MyinfoFragment;
 import com.example.ksandroidplayerdemo.utils.AnalysisUtils;
 
-/*
-* FragmentManager manager = getSupportFragmentManager();
-* FragmentTransaction transaction = manager.beginTransaction();
-* transaction.add(R.id.main_body,new CourseFragment()).commit();
-* */
+import java.util.ArrayList;
+
+import java.util.List;
+
+
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener{
-    //来自main_title_bar.xml
     private TextView tv_main_title;//标题
     private TextView tv_back;//返回按钮
-    private RelativeLayout title_bar;// android:id="@+id/title_bar"
-    //来自activity_main.xml
-    private RelativeLayout main_body;
+    private RelativeLayout title_bar;
     private TextView bottom_bar_text_course;
     private ImageView bottom_bar_image_course;
     private TextView bottom_bar_text_exercises;
@@ -38,21 +42,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private TextView bottom_bar_text_myinfo;
     private ImageView bottom_bar_image_myinfo;
     private LinearLayout main_bottom_bar;
-    //  android:id="@+id/main_body"
-    //  android:id="@+id/bottom_bar_course_btn" 按钮
-    // android:id="@+id/bottom_bar_text_course"
-    // android:id="@+id/bottom_bar_image_course"
-    // android:id="@+id/title_bar";
-    /*main_exercises_icon.png、
-    main_course_icon.png、
-    main_my_icon.png
-    main_exercises_icon_selected.png、
-    main_course_icon_selected.png、
-    main_my_icon_selected.png*/
-    //private View mCourseBtn,mExercisesBtn,mMyInfoBtn;
     private RelativeLayout bottom_bar_course_btn;
     private RelativeLayout bottom_bar_exercises_btn;
     private RelativeLayout bottom_bar_myinfo_btn;
+    private ViewPager mMViewPager;
+    List<Fragment>mFragments=new ArrayList<Fragment>();
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -62,11 +56,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             //从登录活动获得isLogin==true,从设置活动获得isLogin==false，他们的请求码都是1
             //之后还可以根据请求码和结果码完成更多需求
             if (isLogin) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_body, new CourseFragment()).commit();
+                mMViewPager.setCurrentItem(0);
                 clearBottomImageState();
                 setSelectedStatus(0);
             } else {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_body, new MyinfoFragment()).commit();
+                mMViewPager.setCurrentItem(2);
                 clearBottomImageState();
                 setSelectedStatus(2);
             }
@@ -79,11 +73,31 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         initNavigation();
-        initBody();
+
         initBottomBar();
+        mFragments.add(new CourseFragment());
+        mFragments.add(new ExercisesFragment());
+        mFragments.add(new MyinfoFragment());
+        mMViewPager = (ViewPager) findViewById(R.id.viewpage);
+        mMViewPager.setAdapter(new MyFragmentAdapter(getSupportFragmentManager()));
         setInitStatus();
     }
+    class MyFragmentAdapter extends FragmentPagerAdapter {
 
+        public MyFragmentAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
+    }
 
 
 
@@ -94,9 +108,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         title_bar.setBackgroundColor(Color.parseColor("#30B4FF"));
     }
 
-    private void initBody() {
-        main_body = (RelativeLayout) findViewById(R.id.main_body);
-    }
 
     private void initBottomBar() {
         bottom_bar_text_course = (TextView) findViewById(R.id.bottom_bar_text_course);
@@ -121,7 +132,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private void setInitStatus() {
         clearBottomImageState();
         setSelectedStatus(0);
-        getSupportFragmentManager().beginTransaction().add(R.id.main_body, new CourseFragment()).commit();
+        mMViewPager.setCurrentItem(0);
     }
 
     private void setSelectedStatus(int index) {
@@ -163,18 +174,18 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             case R.id.bottom_bar_course_btn:
                 clearBottomImageState();
                 /**  replacing instead of adding **/
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_body, new CourseFragment()).commit();
+                mMViewPager.setCurrentItem(0);
                 setSelectedStatus(0);
                 break;
             case R.id.bottom_bar_exercises_btn:
                 clearBottomImageState();
                 setSelectedStatus(1);
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_body, new ExercisesFragment()).commit();
+                mMViewPager.setCurrentItem(1);
                 break;
             case R.id.bottom_bar_myinfo_btn:
                 clearBottomImageState();
                 setSelectedStatus(2);
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_body, new MyinfoFragment()).commit();
+                mMViewPager.setCurrentItem(2);
                 break;
         }
     }

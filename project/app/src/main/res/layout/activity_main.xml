@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.example.ksandroidplayerdemo.MainActivity">
+
     <LinearLayout
         android:orientation="vertical"
         android:background="@android:color/white"
@@ -12,12 +15,13 @@
         <!--标题栏-->
         <include layout="@layout/main_title_bar" />
         <!--放置Fragment的main_body-->
-        <RelativeLayout
-            android:id="@+id/main_body"
-            android:background="@android:color/white"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </RelativeLayout>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
     </LinearLayout>
 
  <LinearLayout
@@ -109,4 +113,5 @@
              android:src="@drawable/main_my_icon"/>
      </RelativeLayout>
  </LinearLayout>
+
 </RelativeLayout>
