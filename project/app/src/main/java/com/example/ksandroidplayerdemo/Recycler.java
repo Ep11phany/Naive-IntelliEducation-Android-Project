@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.BreakIterator;
+import com.example.ksandroidplayerdemo.bean.Item;
+
 import java.util.List;
 
 

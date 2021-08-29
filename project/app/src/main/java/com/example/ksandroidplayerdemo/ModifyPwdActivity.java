@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.ksandroidplayerdemo.utils.AnalysisUtils;
 import com.example.ksandroidplayerdemo.utils.MD5Utils;
 import com.example.ksandroidplayerdemo.utils.HttpUtils;
+import com.example.ksandroidplayerdemo.bean.User_Info;
 
 import org.json.JSONException;
 import org.json.JSONObject;

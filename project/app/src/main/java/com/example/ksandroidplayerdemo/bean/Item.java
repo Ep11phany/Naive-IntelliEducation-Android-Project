@@ -1,4 +1,4 @@
-package com.example.ksandroidplayerdemo;
+package com.example.ksandroidplayerdemo.bean;
 
 public class Item {
     private String name;

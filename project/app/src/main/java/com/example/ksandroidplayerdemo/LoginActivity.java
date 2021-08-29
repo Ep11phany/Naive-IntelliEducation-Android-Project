@@ -13,20 +13,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ksandroidplayerdemo.utils.HttpUtils;
 import com.example.ksandroidplayerdemo.utils.MD5Utils;
+import com.example.ksandroidplayerdemo.bean.User_Info;
 
-import android.os.Looper;
-import android.app.Dialog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import java.lang.ref.WeakReference;
 
 public class LoginActivity extends AppCompatActivity{

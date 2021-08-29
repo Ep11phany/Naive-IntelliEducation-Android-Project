@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,20 +13,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import com.example.ksandroidplayerdemo.Fragment.CourseFragment;
 import com.example.ksandroidplayerdemo.Fragment.ExercisesFragment;
 import com.example.ksandroidplayerdemo.Fragment.MyinfoFragment;
-
-import java.util.ArrayList;
-
-import java.util.List;
-
 
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener{
@@ -66,8 +56,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 exitTime = System.currentTimeMillis();
             } else {
                 this.finish();
-
-
             }
             return true;
         }

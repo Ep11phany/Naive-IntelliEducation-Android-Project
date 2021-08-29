@@ -2,32 +2,23 @@ package com.example.ksandroidplayerdemo.Fragment;
 
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.ksandroidplayerdemo.MainActivity;
+import com.example.ksandroidplayerdemo.bean.Item;
 import com.example.ksandroidplayerdemo.R;
-import com.example.ksandroidplayerdemo.Fragment.SubjectFragment;
+
 import java.util.List;
 import java.util.ArrayList;
-import android.view.View;
-import android.view.KeyEvent;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-
-import com.example.ksandroidplayerdemo.Item;
-
 
 
 public class CourseFragment extends Fragment implements View.OnClickListener{
@@ -99,7 +90,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
 
 
     private void setListener(View v) {
-        //SubjectList.get(i).setOnClickListener(this);
         recyclerView.setOnClickListener(this);
         plus_btn.setOnClickListener(this);
     }
@@ -130,8 +120,8 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
                 public void onClick(View view) {
                     int position = holder.getAdapterPosition();
                     Item item = mItemList.get(position);
-                    SubViewPager.setCurrentItem(position);
                     //按钮事件
+                    SubViewPager.setCurrentItem(position);
                 }
             });
             return holder;
