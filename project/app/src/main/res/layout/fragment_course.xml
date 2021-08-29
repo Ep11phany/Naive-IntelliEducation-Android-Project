@@ -48,4 +48,18 @@ android:layout_height="match_parent"
         android:textColor="#666666"
         android:textSize="15sp"/>
 </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="30dp"
+        >
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/subpage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        />
+    </LinearLayout>
 </RelativeLayout>

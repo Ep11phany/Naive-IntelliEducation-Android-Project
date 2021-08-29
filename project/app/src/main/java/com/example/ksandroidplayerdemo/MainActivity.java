@@ -23,7 +23,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.ksandroidplayerdemo.Fragment.CourseFragment;
 import com.example.ksandroidplayerdemo.Fragment.ExercisesFragment;
 import com.example.ksandroidplayerdemo.Fragment.MyinfoFragment;
-import com.example.ksandroidplayerdemo.utils.AnalysisUtils;
 
 import java.util.ArrayList;
 
@@ -35,179 +34,141 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private TextView tv_main_title;//标题
     private TextView tv_back;//返回按钮
     private RelativeLayout title_bar;
+    private RelativeLayout main_body;
     private TextView bottom_bar_text_course;
     private ImageView bottom_bar_image_course;
+    private RelativeLayout bottom_bar_course_btn;
     private TextView bottom_bar_text_exercises;
     private ImageView bottom_bar_image_exercises;
+    private RelativeLayout bottom_bar_exercises_btn;
     private TextView bottom_bar_text_myinfo;
     private ImageView bottom_bar_image_myinfo;
-    private LinearLayout main_bottom_bar;
-    private RelativeLayout bottom_bar_course_btn;
-    private RelativeLayout bottom_bar_exercises_btn;
     private RelativeLayout bottom_bar_myinfo_btn;
-    private ViewPager mMViewPager;
-    List<Fragment>mFragments=new ArrayList<Fragment>();
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data != null) {
-            boolean isLogin = data.getBooleanExtra("isLogin", false);
-            //从登录活动获得isLogin==true,从设置活动获得isLogin==false，他们的请求码都是1
-            //之后还可以根据请求码和结果码完成更多需求
-            if (isLogin) {
-                mMViewPager.setCurrentItem(0);
-                clearBottomImageState();
-                setSelectedStatus(0);
-            } else {
-                mMViewPager.setCurrentItem(2);
-                clearBottomImageState();
-                setSelectedStatus(2);
-            }
-        }
-    }
+    private LinearLayout main_bottom_bar;
+    protected long exitTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initView();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        initNavigation();
-
-        initBottomBar();
-        mFragments.add(new CourseFragment());
-        mFragments.add(new ExercisesFragment());
-        mFragments.add(new MyinfoFragment());
-        mMViewPager = (ViewPager) findViewById(R.id.viewpage);
-        mMViewPager.setAdapter(new MyFragmentAdapter(getSupportFragmentManager()));
-        setInitStatus();
-    }
-    class MyFragmentAdapter extends FragmentPagerAdapter {
-
-        public MyFragmentAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragments.size();
-        }
+        setMain();
     }
 
-
-
-    private void initNavigation() {
-        tv_back = (TextView) findViewById(R.id.tv_back);
-        tv_main_title = (TextView) findViewById(R.id.tv_main_title);
-        title_bar = (RelativeLayout) findViewById(R.id.title_bar);
-        title_bar.setBackgroundColor(Color.parseColor("#30B4FF"));
-    }
-
-
-    private void initBottomBar() {
-        bottom_bar_text_course = (TextView) findViewById(R.id.bottom_bar_text_course);
-        bottom_bar_image_course = (ImageView) findViewById(R.id.bottom_bar_image_course);
-        bottom_bar_course_btn = (RelativeLayout) findViewById(R.id.bottom_bar_course_btn);
-        bottom_bar_text_exercises = (TextView) findViewById(R.id.bottom_bar_text_exercises);
-        bottom_bar_image_exercises = (ImageView) findViewById(R.id.bottom_bar_image_exercises);
-        bottom_bar_exercises_btn = (RelativeLayout) findViewById(R.id.bottom_bar_exercises_btn);
-        bottom_bar_text_myinfo = (TextView) findViewById(R.id.bottom_bar_text_myinfo);
-        bottom_bar_image_myinfo = (ImageView) findViewById(R.id.bottom_bar_image_myinfo);
-        bottom_bar_myinfo_btn = (RelativeLayout) findViewById(R.id.bottom_bar_myinfo_btn);
-        main_bottom_bar = (LinearLayout) findViewById(R.id.main_bottom_bar);
-        setListener();
-    }
-
-    private void setListener() {
-        for (int i = 0; i < main_bottom_bar.getChildCount(); i++) {
-            main_bottom_bar.getChildAt(i).setOnClickListener(this);
-        }
-    }
-
-    private void setInitStatus() {
-        clearBottomImageState();
-        setSelectedStatus(0);
-        mMViewPager.setCurrentItem(0);
-    }
-
-    private void setSelectedStatus(int index) {
-        switch (index) {
-            case 0:
-                //mCourseBtn.setSelected(true);
-                bottom_bar_image_course.setImageResource(R.drawable.main_course_icon_selected);
-                bottom_bar_text_course.setTextColor(Color.parseColor("#0097f7"));
-                tv_main_title.setText("博学谷课程");
-                break;
-            case 1:
-                //mExercisesBtn.setSelected(true);
-                bottom_bar_image_exercises.setImageResource(R.drawable.main_exercises_icon_selected);
-                bottom_bar_text_exercises.setTextColor(Color.parseColor("#0097f7"));
-                tv_main_title.setText("博学谷习题");
-                break;
-            case 2:
-                //mMyInfoBtn.setSelected(true);
-                bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon_selected);
-                bottom_bar_text_myinfo.setTextColor(Color.parseColor("#0097f7"));
-                title_bar.setVisibility(View.VISIBLE);
-                tv_main_title.setText("博学谷");
-                break;
-        }
-    }
-
-    private void clearBottomImageState() {
-        bottom_bar_text_course.setTextColor(Color.parseColor("#666666"));
-        bottom_bar_text_exercises.setTextColor(Color.parseColor("#666666"));
-        bottom_bar_text_myinfo.setTextColor(Color.parseColor("#666666"));
-
-        bottom_bar_image_course.setImageResource(R.drawable.main_course_icon);
-        bottom_bar_image_exercises.setImageResource(R.drawable.main_exercises_icon);
-        bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon);
-    }
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.bottom_bar_course_btn:
-                clearBottomImageState();
-                /**  replacing instead of adding **/
-                mMViewPager.setCurrentItem(0);
-                setSelectedStatus(0);
-                break;
-            case R.id.bottom_bar_exercises_btn:
-                clearBottomImageState();
-                setSelectedStatus(1);
-                mMViewPager.setCurrentItem(1);
-                break;
-            case R.id.bottom_bar_myinfo_btn:
-                clearBottomImageState();
-                setSelectedStatus(2);
-                mMViewPager.setCurrentItem(2);
-                break;
-        }
-    }
-
-    protected long exitTime;//记录第一次点击的时间
-
+    //给MainActivity加上退出清除登陆状态的方法。
+    // 连续点击返回两次则退出，两次点击间隔超过2秒则提示再按一次退出。
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
             if ((System.currentTimeMillis() - exitTime) > 2000) {
-                Toast.makeText(this, "再按一次退出博学谷", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "再按一次退出博学谷", Toast.LENGTH_SHORT).show();
                 exitTime = System.currentTimeMillis();
             } else {
-                MainActivity.this.finish();
-                if (AnalysisUtils.readLoginStatus(this)) {
-                    //已登陆的话，清除登陆状态
-                    AnalysisUtils.clearLoginStatus(this);
-                }
-                System.exit(0);
+                this.finish();
+
+
             }
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void setMain() {
+        this.getSupportFragmentManager().beginTransaction().add(R.id.main_body,new MyinfoFragment()).commit();
+        setSelectStatus(2);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data!=null){
+            boolean isLogin=data.getBooleanExtra("isLogin",false);
+            if (isLogin){
+                setSelectStatus(0);
+            }
+            else {
+                setSelectStatus(2);
+            }
+        }
+        if (requestCode == 000) {
+            setSelectStatus(1);
+        }
+    }
+
+    private void setSelectStatus(int index) {
+        switch (index){
+            case 0:
+                bottom_bar_image_course.setImageResource(R.drawable.main_course_icon_selected);
+                bottom_bar_text_course.setTextColor(Color.parseColor("#0097F7"));
+                bottom_bar_text_exercises.setTextColor(Color.parseColor("#666666"));
+                bottom_bar_text_myinfo.setTextColor(Color.parseColor("#666666"));
+                bottom_bar_image_exercises.setImageResource(R.drawable.main_exercises_icon);
+                bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon);
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new CourseFragment()).commit();
+                tv_main_title.setText("博学谷课程");
+                break;
+            case 1:
+                bottom_bar_image_exercises.setImageResource(R.drawable.main_exercises_icon_selected);
+                bottom_bar_text_exercises.setTextColor(Color.parseColor("#0097F7"));
+                bottom_bar_text_course.setTextColor(Color.parseColor("#666666"));
+                bottom_bar_text_myinfo.setTextColor(Color.parseColor("#666666"));
+                bottom_bar_image_course.setImageResource(R.drawable.main_course_icon);
+                bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon);
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new ExercisesFragment()).commit();
+                tv_main_title.setText("博学谷习题");
+                break;
+            case 2:
+                bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon_selected);
+                bottom_bar_text_myinfo.setTextColor(Color.parseColor("#0097F7"));
+                bottom_bar_text_course.setTextColor(Color.parseColor("#666666"));
+                bottom_bar_text_exercises.setTextColor(Color.parseColor("#666666"));
+                bottom_bar_image_exercises.setImageResource(R.drawable.main_exercises_icon);
+                bottom_bar_image_course.setImageResource(R.drawable.main_course_icon);
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new MyinfoFragment()).commit();
+                tv_main_title.setText("博学谷");
+                break;
+        }
+    }
+    private void initView() {
+        tv_main_title=findViewById(R.id.tv_main_title);
+        title_bar=findViewById(R.id.title_bar);
+        //底部导航栏
+        main_body = findViewById(R.id.main_body);
+        bottom_bar_text_course = findViewById(R.id.bottom_bar_text_course);
+        bottom_bar_image_course = findViewById(R.id.bottom_bar_image_course);
+        bottom_bar_course_btn = findViewById(R.id.bottom_bar_course_btn);
+        bottom_bar_text_exercises = findViewById(R.id.bottom_bar_text_exercises);
+        bottom_bar_image_exercises = findViewById(R.id.bottom_bar_image_exercises);
+        bottom_bar_exercises_btn = findViewById(R.id.bottom_bar_exercises_btn);
+        bottom_bar_text_myinfo = findViewById(R.id.bottom_bar_text_myinfo);
+        bottom_bar_image_myinfo = findViewById(R.id.bottom_bar_image_myinfo);
+        bottom_bar_myinfo_btn = findViewById(R.id.bottom_bar_myinfo_btn);
+        main_bottom_bar = findViewById(R.id.main_bottom_bar);
+
+        bottom_bar_course_btn.setOnClickListener(this);
+        bottom_bar_exercises_btn.setOnClickListener(this);
+        bottom_bar_myinfo_btn.setOnClickListener(this);
+
+        tv_main_title.setText("博学谷课程");
+        title_bar.setBackgroundColor(Color.parseColor("#30B4FF"));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.bottom_bar_course_btn:
+                //getSupportFragmentManager().beginTransaction().add(R.id.main_body,new CourseFragment()).commit();
+                setSelectStatus(0);
+                break;
+            case R.id.bottom_bar_exercises_btn:
+                //getSupportFragmentManager().beginTransaction().add(R.id.main_body,new ExercisesFragment()).commit();
+                setSelectStatus(1);
+                break;
+            case R.id.bottom_bar_myinfo_btn:
+                //getSupportFragmentManager().beginTransaction().add(R.id.main_body,new MyinfoFragment()).commit();
+                setSelectStatus(2);
+                break;
+        }
     }
 }

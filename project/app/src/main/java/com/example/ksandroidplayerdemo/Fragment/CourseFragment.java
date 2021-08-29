@@ -3,16 +3,18 @@ package com.example.ksandroidplayerdemo.Fragment;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
+
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.ksandroidplayerdemo.MainActivity;
 import com.example.ksandroidplayerdemo.R;
 import com.example.ksandroidplayerdemo.Fragment.SubjectFragment;
 import java.util.List;
@@ -35,6 +37,8 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
     private RecyclerView recyclerView;
     private View view;
     private Recycler adapter;
+    private ViewPager SubViewPager;
+    List<Fragment>SubFragments=new ArrayList<Fragment>();
     public CourseFragment() {
         // Required empty public constructor
     }
@@ -42,7 +46,22 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+    class MyFragmentAdapter extends FragmentPagerAdapter {
 
+        public MyFragmentAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return SubFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return SubFragments.size();
+        }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,12 +74,15 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         recyclerView.setLayoutManager(layoutManager);
         adapter = new Recycler(SubjectList);
         recyclerView.setAdapter(adapter);
-        plusSubjects();
+        plusSubjects("语文");
         return view;
     }
 
-    private void plusSubjects(){
-        Item item =new Item("数学");
+    private void plusSubjects(String sub){
+        Item item =new Item(sub);
+        SubFragments.add(new SubjectFragment(sub));
+        SubViewPager = (ViewPager) view.findViewById(R.id.subpage);
+        SubViewPager.setAdapter(new MyFragmentAdapter(getFragmentManager()));
         SubjectList.add(item);
         Recycler adapter = new Recycler(SubjectList);
         recyclerView.setAdapter(adapter);
@@ -70,7 +92,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.plus_btn:
-                plusSubjects();
+                plusSubjects("数学");
                 break;
         }
     }
@@ -79,7 +101,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
     private void setListener(View v) {
         //SubjectList.get(i).setOnClickListener(this);
         recyclerView.setOnClickListener(this);
-
         plus_btn.setOnClickListener(this);
     }
 
@@ -109,6 +130,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
                 public void onClick(View view) {
                     int position = holder.getAdapterPosition();
                     Item item = mItemList.get(position);
+                    SubViewPager.setCurrentItem(position);
                     //按钮事件
                 }
             });
