@@ -16,7 +16,6 @@ android:layout_height="match_parent"
 </LinearLayout>
 
 <LinearLayout
-    android:id="@+id/tb"
     android:layout_alignParentTop="true"
     android:background="#F2F2F2"
     android:orientation="horizontal"
@@ -28,12 +27,14 @@ android:layout_height="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="30dp"
-        android:gravity="left">
+        android:layout_gravity= "center_vertical|left"
+        >
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/viewpage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:layout_gravity= "center_vertical|left"/>
     </RelativeLayout>
     <TextView
         android:id="@+id/plus_btn"
