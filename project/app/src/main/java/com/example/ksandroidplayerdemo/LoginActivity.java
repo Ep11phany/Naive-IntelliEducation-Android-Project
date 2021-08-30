@@ -4,7 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -12,20 +13,33 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.ksandroidplayerdemo.utils.HttpUtils;
 import com.example.ksandroidplayerdemo.utils.MD5Utils;
+import com.example.ksandroidplayerdemo.bean.User_Info;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.lang.ref.WeakReference;
 
 public class LoginActivity extends AppCompatActivity{
     private TextView tv_main_title;//标题
-    private TextView tv_back,tv_register,tv_find_psw;//返回键,显示的注册，找回密码
+    private TextView tv_back,tv_register,tv_find_psw,tv_hint;//返回键,显示的注册，找回密码
     private Button btn_login;//登录按钮
     private String userName,psw,spPsw;//获取的用户名，密码，加密密码
     private EditText et_user_name,et_psw;//编辑框
+    private MyHandler mHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         //设置此界面为竖屏
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        mHandler=new MyHandler(this);
         init();
     }
     //获取界面控件
@@ -37,6 +51,7 @@ public class LoginActivity extends AppCompatActivity{
         //从activity_login.xml中获取的
         tv_register=findViewById(R.id.tv_register);
         tv_find_psw=findViewById(R.id.tv_find_psw);
+        tv_hint=findViewById(R.id.tv_hint);
         btn_login=findViewById(R.id.btn_login);
         et_user_name=findViewById(R.id.et_user_name);
         et_psw=findViewById(R.id.et_psw);
@@ -73,11 +88,6 @@ public class LoginActivity extends AppCompatActivity{
                 //开始登录，获取用户名和密码 getText().toString().trim();
                 userName=et_user_name.getText().toString().trim();
                 psw=et_psw.getText().toString().trim();
-                //对当前用户输入的密码进行MD5加密再进行比对判断, MD5Utils.md5( ); psw 进行加密判断是否一致
-                String md5Psw= MD5Utils.md5(psw);
-                // md5Psw ; spPsw 为 根据从SharedPreferences中用户名读取密码
-                // 定义方法 readPsw为了读取用户名，得到密码
-                spPsw=readPsw(userName);
                 // TextUtils.isEmpty
                 if(TextUtils.isEmpty(userName)){
                     Toast.makeText(LoginActivity.this, "请输入用户名", Toast.LENGTH_SHORT).show();
@@ -86,45 +96,26 @@ public class LoginActivity extends AppCompatActivity{
                     Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
                     return;
                     // md5Psw.equals(); 判断，输入的密码加密后，是否与保存在SharedPreferences中一致
-                }else if(md5Psw.equals(spPsw)){
-                    //一致登录成功
-                    Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                    //保存登录状态，在界面保存登录的用户名 定义个方法 saveLoginStatus boolean 状态 , userName 用户名;
-                    saveLoginStatus(true, userName);
-                    //登录成功后关闭此页面进入主页
-                    Intent data=new Intent();
-                    //datad.putExtra( ); name , value ;
-                    data.putExtra("isLogin",true);
-                    //RESULT_OK为Activity系统常量，状态码为-1
-                    // 表示此页面下的内容操作成功将data返回到上一页面，如果是用back返回过去的则不存在用setResult传递data值
-                    setResult(RESULT_OK,data);
-                    //销毁登录界面
-                    LoginActivity.this.finish();
-                    //跳转到主界面，登录成功的状态传递到 MainActivity 中
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                    return;
-                }else if((spPsw!=null&&!TextUtils.isEmpty(spPsw)&&!md5Psw.equals(spPsw))){
-                    Toast.makeText(LoginActivity.this, "输入的用户名和密码不一致", Toast.LENGTH_SHORT).show();
-                    return;
-                }else{
-                    Toast.makeText(LoginActivity.this, "此用户名不存在", Toast.LENGTH_SHORT).show();
                 }
+                else{
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                Message msg = Message.obtain();
+                                msg.obj = new User_Info(userName,"",psw);
+                                mHandler.handleMessage(msg);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                }
+
             }
         });
     }
-    /**
-     *从SharedPreferences中根据用户名读取密码
-     */
-    private String readPsw(String userName){
-        //getSharedPreferences("loginInfo",MODE_PRIVATE);
-        //"loginInfo",mode_private; MODE_PRIVATE表示可以继续写入
-        //修改为与后端通信
 
-
-        SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
-        //sp.getString() userName, "";
-        return sp.getString(userName , "");
-    }
     /**
      *保存登录状态和登录用户名到SharedPreferences中
      */
@@ -164,6 +155,85 @@ public class LoginActivity extends AppCompatActivity{
                 et_user_name.setText(userName);
                 //et_user_name控件的setSelection()方法来设置光标位置
                 et_user_name.setSelection(userName.length());
+            }
+        }
+    }
+
+    private static class MyHandler extends Handler {
+        WeakReference<AppCompatActivity> reference;
+
+        public MyHandler(AppCompatActivity activity) {
+            reference = new WeakReference<>(activity);
+        }
+        public void handleMessage(Message msg) {
+            LoginActivity activity = (LoginActivity) reference.get();
+            User_Info ui=(User_Info)msg.obj;
+            Map<String,String> mp=new HashMap<String,String>();
+            mp.put("name",ui.Username);
+            mp.put("password",MD5Utils.md5(ui.Password));
+            String sri=HttpUtils.sendGetRequest(mp,"UTF-8","/api/login");//
+            if(sri!="Failed"){
+                try {
+                    JSONObject jo = new JSONObject(sri);
+                    String MSG=jo.get("msg").toString();
+                    if(MSG.equals("Success!")){
+                        //保存登录状态，在界面保存登录的用户名 定义个方法 saveLoginStatus boolean 状态 , userName 用户名;
+                        activity.saveLoginStatus(true, ui.Username);
+                        //登录成功后关闭此页面进入主页
+                        Intent data=new Intent();
+                        //datad.putExtra( ); name , value ;
+                        data.putExtra("isLogin",true);
+                        //RESULT_OK为Activity系统常量，状态码为-1
+                        // 表示此页面下的内容操作成功将data返回到上一页面，如果是用back返回过去的则不存在用setResult传递data值
+                        activity.setResult(RESULT_OK,data);
+                        //销毁登录界面
+                        activity.finish();
+                        //跳转到主界面，登录成功的状态传递到 MainActivity 中
+                        activity.startActivity(new Intent(activity, MainActivity.class));
+                        return;
+
+                    }
+                    else if(MSG.equals("User not found!")){
+                        activity.tv_hint.setText("用户名无效");
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    Thread.sleep(3000);
+                                    activity.tv_hint.setText("");
+                                } catch (Exception e) {
+                                }
+                            }
+                        }).start();
+                    }
+                    else if(MSG.equals("Wrong Password!")){
+                        activity.tv_hint.setText("用户名或密码错误");
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    Thread.sleep(3000);
+                                    activity.tv_hint.setText("");
+                                } catch (Exception e) {
+                                }
+                            }
+                        }).start();
+                    }
+                } catch (JSONException e) {
+                }
+            }
+            else{
+                activity.tv_hint.setText("网络超时，请稍后重试");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            Thread.sleep(3000);
+                            activity.tv_hint.setText("");
+                        } catch (Exception e) {
+                        }
+                    }
+                }).start();
             }
         }
     }
