@@ -124,15 +124,14 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * 保存账号和密码到SharedPreferences中SharedPreferences
      */
-    private void saveRegisterInfo(String userName,String psw){
-        String md5Psw = MD5Utils.md5(psw);//把密码用MD5加密
+    private void saveRegisterInfo(String userName){
         //loginInfo表示文件名, mode_private SharedPreferences sp = getSharedPreferences( );
         SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
         //获取编辑器， SharedPreferences.Editor  editor -> sp.edit();
         SharedPreferences.Editor editor=sp.edit();
         //以用户名为key，密码为value保存在SharedPreferences中
         //key,value,如键值对，editor.putString(用户名，密码）;
-        editor.putString(userName, md5Psw);
+        editor.putString(userName,"");
         //提交修改 editor.commit();
         editor.commit();
     }
@@ -149,9 +148,9 @@ public class RegisterActivity extends AppCompatActivity {
             User_Info ui = (User_Info) msg.obj;
             Map<String, String> mp = new HashMap<String, String>();
             mp.put("name", ui.Username);
-            mp.put("newPassword", MD5Utils.md5(ui.Password));
-            mp.put("OldPassword", MD5Utils.md5(ui.Password));
-            String sri = HttpUtils.sendPostRequest(mp, "UTF-8", "/api/reg");
+            mp.put("password", MD5Utils.md5(ui.Password));
+            mp.put("email", ui.Email);
+            String sri = HttpUtils.sendPostRequest(mp, "UTF-8", "/api/user/register");
             if (sri != "Failed") {
                 try {
                     JSONObject jo = new JSONObject(sri);
@@ -161,7 +160,7 @@ public class RegisterActivity extends AppCompatActivity {
                         /**
                          * 保存账号和密码到SharedPreferences中
                          */
-                        activity.saveRegisterInfo(ui.Username, ui.Password);
+                        activity.saveRegisterInfo(ui.Username);
                         Intent data = new Intent();
                         data.putExtra("userName", activity.userName);
                         activity.setResult(RESULT_OK, data);

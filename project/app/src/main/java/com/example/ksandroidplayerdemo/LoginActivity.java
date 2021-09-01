@@ -121,12 +121,9 @@ public class LoginActivity extends AppCompatActivity{
      */
     private void saveLoginStatus(boolean status,String userName){
         //saveLoginStatus(true, userName);
-        //loginInfo表示文件名  SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
         SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
         //获取编辑器
         SharedPreferences.Editor editor=sp.edit();
-        //存入boolean类型的登录状态
-        editor.putBoolean("isLogin", status);
         //存入登录状态时的用户名
         editor.putString("loginUserName", userName);
         //提交修改
@@ -171,7 +168,7 @@ public class LoginActivity extends AppCompatActivity{
             Map<String,String> mp=new HashMap<String,String>();
             mp.put("name",ui.Username);
             mp.put("password",MD5Utils.md5(ui.Password));
-            String sri=HttpUtils.sendGetRequest(mp,"UTF-8","/api/login");//
+            String sri=HttpUtils.sendGetRequest(mp,"UTF-8","/api/user/login");//
             if(sri!="Failed"){
                 try {
                     JSONObject jo = new JSONObject(sri);

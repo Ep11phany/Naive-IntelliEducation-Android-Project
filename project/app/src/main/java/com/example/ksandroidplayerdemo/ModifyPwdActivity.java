@@ -136,7 +136,7 @@ public class ModifyPwdActivity extends AppCompatActivity {
             mp.put("name",ui.Username);
             mp.put("oldPassword",MD5Utils.md5(ui.Password));
             mp.put("newPassword",MD5Utils.md5(ui.newPassword));
-            String sri=HttpUtils.sendPostRequest(mp,"UTF-8","/api/modipwd");//
+            String sri=HttpUtils.sendPostRequest(mp,"UTF-8","/api/user/modifiPassword");//
             if(sri!="Failed"){
                 try {
                     JSONObject jo = new JSONObject(sri);

@@ -1,7 +1,10 @@
 package com.example.ksandroidplayerdemo.Fragment;
 
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,9 +19,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
+import android.content.SharedPreferences;
 
 import com.bumptech.glide.request.transition.Transition;
 import com.example.ksandroidplayerdemo.bean.Item;
@@ -81,16 +83,33 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         view = inflater.inflate(R.layout.fragment_course, container, false);
         plus_btn=(TextView)view.findViewById(R.id.plus_btn);
         SubViewPager = (ViewPager) view.findViewById(R.id.subpage);
-        toadd_SubjectList.add(new Item("语文"));
-        toadd_SubjectList.add(new Item("数学"));
-        toadd_SubjectList.add(new Item("英语"));
-        toadd_SubjectList.add(new Item("物理"));
-        toadd_SubjectList.add(new Item("化学"));
-        toadd_SubjectList.add(new Item("生物"));
-        toadd_SubjectList.add(new Item("政治"));
-        toadd_SubjectList.add(new Item("历史"));
-        toadd_SubjectList.add(new Item("地理"));
 
+        initSubject();
+
+
+        radapter = new Recycler1(SubjectList);
+        recyclerView = (RecyclerView) view.findViewById(R.id.viewpage);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(radapter);
+        SubFragments=new ArrayList<>();
+        Iterator<Item> iterator = total_SubjectList.iterator();
+        while (iterator.hasNext()){
+            Item next = iterator.next();
+            String name = next.getName();
+            if (isIn(name,SubjectList)){
+                SubFragments.add(new SubjectFragment(name));
+            }
+        }
+        SubViewPager.setAdapter(new MyFragmentAdapter(getFragmentManager()));
+
+        setListener(view);
+        return view;
+    }
+
+
+    private void initSubject(){
         total_SubjectList.add(new Item("语文"));
         total_SubjectList.add(new Item("数学"));
         total_SubjectList.add(new Item("英语"));
@@ -101,16 +120,71 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         total_SubjectList.add(new Item("历史"));
         total_SubjectList.add(new Item("地理"));
 
-        radapter = new Recycler1(SubjectList);
+        SharedPreferences sp=getActivity().getSharedPreferences("SubjectInfo", MODE_PRIVATE);
+        if(sp.getBoolean("FirstTime?",true)){
+            //若为第一次，默认加载三科
+            SubjectList.add(new Item("语文"));
+            SubjectList.add(new Item("数学"));
+            SubjectList.add(new Item("英语"));
+            toadd_SubjectList.add(new Item("物理"));
+            toadd_SubjectList.add(new Item("化学"));
+            toadd_SubjectList.add(new Item("生物"));
+            toadd_SubjectList.add(new Item("政治"));
+            toadd_SubjectList.add(new Item("历史"));
+            toadd_SubjectList.add(new Item("地理"));
+            SharedPreferences.Editor editor=sp.edit();
+            editor.putBoolean("FirstTime?",false);
+            editor.commit();
+        }else {
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.viewpage);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(radapter);
-        setListener(view);
-        return view;
+            if (sp.getBoolean("语文", false)) {
+                SubjectList.add(new Item("语文"));
+            } else {
+                toadd_SubjectList.add(new Item("语文"));
+            }
+            if (sp.getBoolean("数学", false)) {
+                SubjectList.add(new Item("数学"));
+            } else {
+                toadd_SubjectList.add(new Item("数学"));
+            }
+            if (sp.getBoolean("英语", false)) {
+                SubjectList.add(new Item("英语"));
+            } else {
+                toadd_SubjectList.add(new Item("英语"));
+            }
+            if (sp.getBoolean("物理", false)) {
+                SubjectList.add(new Item("物理"));
+            } else {
+                toadd_SubjectList.add(new Item("物理"));
+            }
+            if (sp.getBoolean("化学", false)) {
+                SubjectList.add(new Item("化学"));
+            } else {
+                toadd_SubjectList.add(new Item("化学"));
+            }
+            if (sp.getBoolean("生物", false)) {
+                SubjectList.add(new Item("生物"));
+            } else {
+                toadd_SubjectList.add(new Item("生物"));
+            }
+            if (sp.getBoolean("政治", false)) {
+                SubjectList.add(new Item("政治"));
+            } else {
+                toadd_SubjectList.add(new Item("政治"));
+            }
+            if (sp.getBoolean("历史", false)) {
+                SubjectList.add(new Item("历史"));
+            } else {
+                toadd_SubjectList.add(new Item("历史"));
+            }
+            if (sp.getBoolean("地理", false)) {
+                SubjectList.add(new Item("地理"));
+            } else {
+                toadd_SubjectList.add(new Item("地理"));
+            }
+        }
     }
+
 
     boolean isIn(String sub,List<Item> lst){
         Iterator<Item> iterator = lst.iterator();
@@ -168,24 +242,35 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
                     int position = holder.getAdapterPosition();
                     String sub=mItemList.get(position).getName();
 
-
                     //按钮事件
                     Item item =new Item(sub);
                     SubFragments=new ArrayList<>();
                     Iterator<Item> iterator = total_SubjectList.iterator();
                     List<Item> lst1=new ArrayList<>();
                     List<Item> lst2=new ArrayList<>();
+                    //将展示列表信息存入sharepreference
+                    SharedPreferences sp=getActivity().getSharedPreferences("SubjectInfo", MODE_PRIVATE);
+                    //获取编辑器
+                    SharedPreferences.Editor editor=sp.edit();
+                    //从total_Subject中全部读入，重新记录，并非移动，若有更好的方式可以移动并保持学科顺序，请修改
                     while (iterator.hasNext()){
                         Item next = iterator.next();
                         String name = next.getName();
                         if ((isIn(name,SubjectList)&&!name.equals(sub))||(isIn(name,toadd_SubjectList)&&name.equals(sub))){
                             lst1.add(new Item(name));
                             SubFragments.add(new SubjectFragment(name));
+                            //存入编辑器
+                            editor.putBoolean(name,true);
                         }
                         else{
                             lst2.add(new Item(name));
+                            //存入编辑器
+                            editor.putBoolean(name,false);
                         }
                     }
+
+                    //提交修改
+                    editor.commit();
                     SubjectList= lst1;
                     toadd_SubjectList=lst2;
                     SubViewPager.setAdapter(new MyFragmentAdapter(getFragmentManager()));
