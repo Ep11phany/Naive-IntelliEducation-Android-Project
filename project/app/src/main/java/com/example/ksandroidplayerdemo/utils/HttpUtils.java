@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class HttpUtils {
 
-    private static String PATH = "http://10.0.0.4:8080";//localhost:8080
+    private static String PATH = "http://49.232.101.141:8080";//localhost:8080
 
     public HttpUtils() {}
 

@@ -20,20 +20,16 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
-import android.content.SharedPreferences;
 
-import com.bumptech.glide.request.transition.Transition;
 import com.example.ksandroidplayerdemo.bean.Item;
-import com.example.ksandroidplayerdemo.utils.Utils;
+
 import com.example.ksandroidplayerdemo.R;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 
-import javax.security.auth.Subject;
 
 
 public class CourseFragment extends Fragment implements View.OnClickListener{
@@ -85,24 +81,15 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         SubViewPager = (ViewPager) view.findViewById(R.id.subpage);
 
         initSubject();
-
-
+        SubViewPager.setAdapter(new MyFragmentAdapter(getFragmentManager()));
         radapter = new Recycler1(SubjectList);
         recyclerView = (RecyclerView) view.findViewById(R.id.viewpage);
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(radapter);
-        SubFragments=new ArrayList<>();
-        Iterator<Item> iterator = total_SubjectList.iterator();
-        while (iterator.hasNext()){
-            Item next = iterator.next();
-            String name = next.getName();
-            if (isIn(name,SubjectList)){
-                SubFragments.add(new SubjectFragment(name));
-            }
-        }
-        SubViewPager.setAdapter(new MyFragmentAdapter(getFragmentManager()));
+
+
 
         setListener(view);
         return view;
@@ -121,6 +108,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         total_SubjectList.add(new Item("地理"));
 
         SharedPreferences sp=getActivity().getSharedPreferences("SubjectInfo", MODE_PRIVATE);
+        SubjectList=new ArrayList<>();
         if(sp.getBoolean("FirstTime?",true)){
             //若为第一次，默认加载三科
             SubjectList.add(new Item("语文"));
@@ -136,7 +124,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
             editor.putBoolean("FirstTime?",false);
             editor.commit();
         }else {
-
             if (sp.getBoolean("语文", false)) {
                 SubjectList.add(new Item("语文"));
             } else {
@@ -181,6 +168,15 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
                 SubjectList.add(new Item("地理"));
             } else {
                 toadd_SubjectList.add(new Item("地理"));
+            }
+        }
+        SubFragments=new ArrayList<>();
+        Iterator<Item> iterator = total_SubjectList.iterator();
+        while (iterator.hasNext()){
+            Item next = iterator.next();
+            String name = next.getName();
+            if (isIn(name,SubjectList)){
+                SubFragments.add(new SubjectFragment(name));
             }
         }
     }
@@ -243,7 +239,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
                     String sub=mItemList.get(position).getName();
 
                     //按钮事件
-                    Item item =new Item(sub);
                     SubFragments=new ArrayList<>();
                     Iterator<Item> iterator = total_SubjectList.iterator();
                     List<Item> lst1=new ArrayList<>();

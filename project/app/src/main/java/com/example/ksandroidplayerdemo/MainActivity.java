@@ -81,6 +81,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private void setSelectStatus(int index) {
         switch (index){
             case 0:
+                for(int i=0;i<getSupportFragmentManager().getFragments().size();i++){
+                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().getFragments().get(i)).commit();
+                }
+                //清除所有页面以重新渲染
                 bottom_bar_image_course.setImageResource(R.drawable.main_course_icon_selected);
                 bottom_bar_text_course.setTextColor(Color.parseColor("#0097F7"));
                 bottom_bar_text_exercises.setTextColor(Color.parseColor("#666666"));
@@ -142,6 +146,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             case R.id.bottom_bar_course_btn:
                 //getSupportFragmentManager().beginTransaction().add(R.id.main_body,new CourseFragment()).commit();
                 setSelectStatus(0);
+
                 break;
             case R.id.bottom_bar_exercises_btn:
                 //getSupportFragmentManager().beginTransaction().add(R.id.main_body,new ExercisesFragment()).commit();
