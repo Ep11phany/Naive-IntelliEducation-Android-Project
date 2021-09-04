@@ -2,6 +2,8 @@ package com.example.ksandroidplayerdemo.Fragment;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -15,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.ksandroidplayerdemo.EntityActivity;
+import com.example.ksandroidplayerdemo.MainActivity;
 import com.example.ksandroidplayerdemo.R;
 import com.example.ksandroidplayerdemo.bean.Item;
 
@@ -23,7 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
+import android.app.Activity.*;
 
 public class InstanceListFragment extends Fragment {
     private List<Map<String,String>> instanceList;
@@ -80,6 +84,19 @@ public class InstanceListFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     int position = holder.getAdapterPosition();
+                    //按钮事件
+
+                    Activity activity=getActivity();
+                    Intent data=new Intent();
+                    //datad.putExtra( ); name , value ;
+                    data.putExtra("uri", instanceList.get(position).get("uri"));
+                    //RESULT_OK为Activity系统常量，状态码为-1
+                    // 表示此页面下的内容操作成功将data返回到上一页面，如果是用back返回过去的则不存在用setResult传递data值
+                    activity.setResult(activity.RESULT_OK,data);
+                    //销毁登录界面
+                    //?activity.finish();
+                    //跳转到主界面，登录成功的状态传递到 MainActivity 中
+                    activity.startActivity(new Intent(activity, EntityActivity.class));
                 }
             });
             return holder;
