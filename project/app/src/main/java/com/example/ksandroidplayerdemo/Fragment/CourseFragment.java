@@ -6,6 +6,8 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,31 +16,34 @@ import android.view.Window;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
-import android.content.SharedPreferences;
 
-import com.bumptech.glide.request.transition.Transition;
 import com.example.ksandroidplayerdemo.bean.Item;
-import com.example.ksandroidplayerdemo.utils.Utils;
-import com.example.ksandroidplayerdemo.R;
 
+import com.example.ksandroidplayerdemo.R;
+import com.example.ksandroidplayerdemo.utils.HttpUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-
-import javax.security.auth.Subject;
+import java.util.Map;
+import com.alibaba.fastjson.*;
 
 
 public class CourseFragment extends Fragment implements View.OnClickListener{
 
-    private List<Item> SubjectList = new ArrayList<>();
+    private List<Item> SubjectList;
     private List<Item> toadd_SubjectList=new ArrayList<>();
     private List<Item> total_SubjectList=new ArrayList<>();
     private TextView plus_btn;
@@ -51,6 +56,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
     private Recycler toadd_adapter;
     private ViewPager SubViewPager;
     private List<Fragment> SubFragments=new ArrayList<>();
+
     public CourseFragment() {
         // Required empty public constructor
     }
@@ -58,6 +64,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
     class MyFragmentAdapter extends FragmentPagerAdapter {
 
         public MyFragmentAdapter(FragmentManager fm) {
@@ -68,6 +75,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         public Fragment getItem(int position) {
             return SubFragments.get(position);
         }
+
         public long getItemId(int position){
             return SubjectList.get(position).getName().hashCode();
         }
@@ -77,15 +85,18 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
             return SubFragments.size();
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         view = inflater.inflate(R.layout.fragment_course, container, false);
         plus_btn=(TextView)view.findViewById(R.id.plus_btn);
         SubViewPager = (ViewPager) view.findViewById(R.id.subpage);
 
         initSubject();
-
+        SubViewPager.setOffscreenPageLimit(SubFragments.size());
+        SubViewPager.setAdapter(new MyFragmentAdapter(getChildFragmentManager()));
 
         radapter = new Recycler1(SubjectList);
         recyclerView = (RecyclerView) view.findViewById(R.id.viewpage);
@@ -93,16 +104,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(radapter);
-        SubFragments=new ArrayList<>();
-        Iterator<Item> iterator = total_SubjectList.iterator();
-        while (iterator.hasNext()){
-            Item next = iterator.next();
-            String name = next.getName();
-            if (isIn(name,SubjectList)){
-                SubFragments.add(new SubjectFragment(name));
-            }
-        }
-        SubViewPager.setAdapter(new MyFragmentAdapter(getFragmentManager()));
 
         setListener(view);
         return view;
@@ -121,6 +122,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         total_SubjectList.add(new Item("地理"));
 
         SharedPreferences sp=getActivity().getSharedPreferences("SubjectInfo", MODE_PRIVATE);
+        SubjectList=new ArrayList<>();
         if(sp.getBoolean("FirstTime?",true)){
             //若为第一次，默认加载三科
             SubjectList.add(new Item("语文"));
@@ -136,7 +138,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
             editor.putBoolean("FirstTime?",false);
             editor.commit();
         }else {
-
             if (sp.getBoolean("语文", false)) {
                 SubjectList.add(new Item("语文"));
             } else {
@@ -183,6 +184,15 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
                 toadd_SubjectList.add(new Item("地理"));
             }
         }
+        SubFragments=new ArrayList<>();
+        Iterator<Item> iterator = total_SubjectList.iterator();
+        while (iterator.hasNext()){
+            Item next = iterator.next();
+            String name = next.getName();
+            if (isIn(name,SubjectList)){
+                SubFragments.add(new SubjectFragment(name));
+            }
+        }
     }
 
 
@@ -199,7 +209,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
     }
 
 
-
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.plus_btn:
@@ -208,13 +217,11 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-
     private void setListener(View v) {
         plus_btn.setOnClickListener(this);
     }
 
-
-    public class Recycler extends RecyclerView.Adapter<Recycler.ViewHolder> {
+    private class Recycler extends RecyclerView.Adapter<Recycler.ViewHolder> {
 
         private List<Item> mItemList;
 
@@ -239,11 +246,11 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
             holder.Name.setOnClickListener(new View.OnClickListener() {//对加载的子项注册监听事件
                 @Override
                 public void onClick(View v) {
+                    /*
                     int position = holder.getAdapterPosition();
                     String sub=mItemList.get(position).getName();
 
                     //按钮事件
-                    Item item =new Item(sub);
                     SubFragments=new ArrayList<>();
                     Iterator<Item> iterator = total_SubjectList.iterator();
                     List<Item> lst1=new ArrayList<>();
@@ -268,7 +275,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
                             editor.putBoolean(name,false);
                         }
                     }
-
                     //提交修改
                     editor.commit();
                     SubjectList= lst1;
@@ -276,7 +282,10 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
                     SubViewPager.setAdapter(new MyFragmentAdapter(getFragmentManager()));
                     recyclerView.setAdapter(new Recycler1(SubjectList));
                     setListener(view);
-                    initBottom();
+                    initBottom();*/
+
+
+
                 }
             });
             return holder;
@@ -299,7 +308,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
             return mItemList.size();
         }
     }
-
 
     public class Recycler1 extends RecyclerView.Adapter<Recycler1.ViewHolder> {
 
@@ -327,7 +335,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
                     int position = holder.getAdapterPosition();
                     String sub=mItemList.get(position).getName();
                     //按钮事件
-
                     SubViewPager.setCurrentItem(position);
                 }
             });
@@ -356,7 +363,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         toadd_View.setLayoutManager(layoutManager);
         toadd_View.setAdapter(toadd_adapter);
     }
-
 
     private void showBottomDialog() {
         //1、使用Dialog、设置style
