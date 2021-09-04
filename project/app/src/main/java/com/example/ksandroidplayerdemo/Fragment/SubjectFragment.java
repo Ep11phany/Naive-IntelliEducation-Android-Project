@@ -14,29 +14,33 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
+import com.alibaba.fastjson.JSONArray;
 import com.example.ksandroidplayerdemo.LoginActivity;
 import com.example.ksandroidplayerdemo.MainActivity;
 import com.example.ksandroidplayerdemo.R;
-import com.example.ksandroidplayerdemo.bean.User_Info;
+import com.example.ksandroidplayerdemo.Fragment.InstanceListFragment;
 import com.example.ksandroidplayerdemo.utils.HttpUtils;
-import com.example.ksandroidplayerdemo.utils.MD5Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import com.alibaba.fastjson.*;
 
 public class SubjectFragment extends Fragment {
-    public TextView Name;
+
     public View view;
     public String Subject;
     private MyHandler myHandler;
+    private List<Map<String,String>> lst;
     public SubjectFragment(String name) {
         Subject=name;
-        // Required empty public constructor
     }
 
 
@@ -45,17 +49,15 @@ public class SubjectFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view=inflater.inflate(R.layout.fragment_subject, container, false);
-        Name=(TextView)view.findViewById(R.id.subject);
-        Name.setText(Subject);
-
+        myHandler=new MyHandler(getActivity());
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try{
                     Message msg = Message.obtain();
                     HashMap<String ,String> hm=new HashMap<String ,String>();
-                    hm.put("course","chinese");
-                    hm.put("name","李白");
+                    hm.put("course","chinese");//tobe changed
+                    hm.put("searchKey","学");//tobe changed
                     msg.obj=hm;
                     myHandler.handleMessage(msg);
                 } catch (Exception e) {
@@ -66,44 +68,28 @@ public class SubjectFragment extends Fragment {
         return view;
     }
 
-    private static class MyHandler extends Handler {
-        WeakReference<AppCompatActivity> reference;
 
-        public MyHandler(AppCompatActivity activity) {
+    private class MyHandler extends Handler {
+        WeakReference<FragmentActivity> reference;
+        public MyHandler(FragmentActivity activity) {
             reference = new WeakReference<>(activity);
         }
         public void handleMessage(Message msg) {
-            LoginActivity activity = (LoginActivity) reference.get();
-            User_Info ui=(User_Info)msg.obj;
-            Map<String,String> mp=new HashMap<String,String>();
-            mp.put("name",ui.Username);
-            mp.put("password", MD5Utils.md5(ui.Password));
-            String sri= HttpUtils.sendGetRequest(mp,"UTF-8","/api/user/login");//
+            Map<String,String> mp=(HashMap)msg.obj;
+            String sri= HttpUtils.sendGetRequest(mp,"UTF-8","/api/edukg/searchInstance");
             if(sri!="Failed"){
                 try {
                     JSONObject jo = new JSONObject(sri);
                     String MSG=jo.get("msg").toString();
-                    if(MSG.equals("Success!")){
-                        //登录成功后关闭此页面进入主页
-                        Intent data=new Intent();
-                        //datad.putExtra( ); name , value ;
-                        data.putExtra("isLogin",true);
-                        //RESULT_OK为Activity系统常量，状态码为-1
-                        // 表示此页面下的内容操作成功将data返回到上一页面，如果是用back返回过去的则不存在用setResult传递data值
-                        activity.setResult(RESULT_OK,data);
-                        //销毁登录界面
-                        activity.finish();
-                        //跳转到主界面，登录成功的状态传递到 MainActivity 中
-                        activity.startActivity(new Intent(activity, MainActivity.class));
+                    if(MSG.equals("成功")){
+                        String str= jo.get("data").toString();
+                        lst = (List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
+                        getChildFragmentManager().beginTransaction().replace(R.id.content,new InstanceListFragment(lst)).commit();
                         return;
-
                     }
-
                 } catch (JSONException e) {
                 }
             }
-
         }
     }
-
 }
