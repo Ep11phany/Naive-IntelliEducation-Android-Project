@@ -84,7 +84,7 @@ public class SubjectFragment extends Fragment {
                     if(MSG.equals("成功")){
                         String str= jo.get("data").toString();
                         lst = (List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
-                        getChildFragmentManager().beginTransaction().replace(R.id.content,new InstanceListFragment(lst)).commit();
+                        getChildFragmentManager().beginTransaction().replace(R.id.content,new InstanceListFragment(lst,Subject)).commit();
                         return;
                     }
                 } catch (JSONException e) {

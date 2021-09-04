@@ -29,13 +29,17 @@ import java.util.List;
 import java.util.Map;
 import android.app.Activity.*;
 
+import javax.security.auth.Subject;
+
 public class InstanceListFragment extends Fragment {
     private List<Map<String,String>> instanceList;
     private RecyclerView instanceView;
     private Recycler adapter;
     public View view;
-    public InstanceListFragment(List l) {
+    public String subject;
+    public InstanceListFragment(List l,String s) {
         instanceList=l;
+        subject=s;
     }
 
 
@@ -89,7 +93,8 @@ public class InstanceListFragment extends Fragment {
                     Activity activity=getActivity();
                     Intent data=new Intent();
                     //datad.putExtra( ); name , value ;
-                    data.putExtra("uri", instanceList.get(position).get("uri"));
+                    data.putExtra("course", subject);
+                    data.putExtra("label", instanceList.get(position).get("label"));
                     //RESULT_OK为Activity系统常量，状态码为-1
                     // 表示此页面下的内容操作成功将data返回到上一页面，如果是用back返回过去的则不存在用setResult传递data值
                     activity.setResult(activity.RESULT_OK,data);
