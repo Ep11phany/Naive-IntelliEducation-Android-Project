@@ -35,6 +35,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private ImageView bottom_bar_image_myinfo;
     private RelativeLayout bottom_bar_myinfo_btn;
     private LinearLayout main_bottom_bar;
+    private TextView tv_question;
     protected long exitTime;
 
     @Override
@@ -117,6 +118,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     }
     private void initView() {
+        tv_question=findViewById(R.id.tv_question);
+        tv_question.setOnClickListener(this);
         tv_main_title=findViewById(R.id.tv_main_title);
         title_bar=findViewById(R.id.title_bar);
         //底部导航栏
@@ -136,6 +139,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         bottom_bar_exercises_btn.setOnClickListener(this);
         bottom_bar_myinfo_btn.setOnClickListener(this);
 
+        tv_back=findViewById(R.id.tv_back);
         tv_main_title.setText("课程");
         title_bar.setBackgroundColor(Color.parseColor("#30B4FF"));
     }
@@ -144,17 +148,20 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.bottom_bar_course_btn:
-                //getSupportFragmentManager().beginTransaction().add(R.id.main_body,new CourseFragment()).commit();
                 setSelectStatus(0);
 
                 break;
             case R.id.bottom_bar_exercises_btn:
-                //getSupportFragmentManager().beginTransaction().add(R.id.main_body,new ExercisesFragment()).commit();
                 setSelectStatus(1);
                 break;
             case R.id.bottom_bar_myinfo_btn:
-                //getSupportFragmentManager().beginTransaction().add(R.id.main_body,new MyinfoFragment()).commit();
                 setSelectStatus(2);
+                break;
+            case R.id.tv_question:
+                startActivity(new Intent(this, QuestionActivity.class));
+                break;
+            case R.id.tv_back:
+                finish();
                 break;
         }
     }
