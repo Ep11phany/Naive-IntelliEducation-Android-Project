@@ -21,13 +21,12 @@
         android:textColor="@android:color/white"
         android:textSize="20sp"/>
     <TextView
-        android:visibility="gone"
-        android:text="保存"
+        android:text="Q"
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:layout_centerVertical="true"
         android:layout_marginRight="20dp"
-        android:id="@+id/tv_save"
+        android:id="@+id/tv_question"
         android:layout_marginTop="20dp"
         android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
