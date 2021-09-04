@@ -246,7 +246,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
             holder.Name.setOnClickListener(new View.OnClickListener() {//对加载的子项注册监听事件
                 @Override
                 public void onClick(View v) {
-                    /*
                     int position = holder.getAdapterPosition();
                     String sub=mItemList.get(position).getName();
 
@@ -282,10 +281,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
                     SubViewPager.setAdapter(new MyFragmentAdapter(getFragmentManager()));
                     recyclerView.setAdapter(new Recycler1(SubjectList));
                     setListener(view);
-                    initBottom();*/
-
-
-
+                    initBottom();
                 }
             });
             return holder;
