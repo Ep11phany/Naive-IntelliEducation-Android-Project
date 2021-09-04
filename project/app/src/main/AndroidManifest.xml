@@ -47,5 +47,6 @@
         <activity android:name=".ModifyPwdActivity"></activity>
         <activity android:name=".ChangeUserInfoActivity"></activity>
         <activity android:name=".UserInfoActivity"></activity>
+        <activity android:name=".EntityActivity"></activity>
     </application>
 </manifest>
