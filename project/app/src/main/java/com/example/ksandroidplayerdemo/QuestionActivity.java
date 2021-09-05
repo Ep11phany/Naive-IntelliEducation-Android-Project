@@ -45,7 +45,7 @@ public class QuestionActivity extends AppCompatActivity {
     private EditText Question;
     //用户名，密码，再次输入的密码的控件的获取值
     private String question;
-    private MyHandler mHandler;
+    private AppCompatActivity activity=this;
     private Button query;
     private TextView tv_back;
     private RelativeLayout title_bar;
@@ -72,7 +72,6 @@ public class QuestionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_question);
         //设置此界面为竖屏
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        mHandler=new MyHandler(this);
         init();
         adapter = new Recycler(lst);
         recyclerView = (RecyclerView) findViewById(R.id.subjects);
@@ -100,66 +99,27 @@ public class QuestionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 question=Question.getText().toString().trim();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try{
-                            Message msg = Message.obtain();
-                            HashMap<String ,String> hm=new HashMap<String ,String>();
-                            hm.put("course",subject);
-                            hm.put("searchKey",question);
-                            msg.obj=hm;
-                            mHandler.handleMessage(msg);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
+                Intent data=new Intent(activity, ResultActivity.class);
+                //datad.putExtra( ); name , value ;
+                data.putExtra("searchKey",question);
+                data.putExtra("subject",subject);
+                //RESULT_OK为Activity系统常量，状态码为-1
+                // 表示此页面下的内容操作成功将data返回到上一页面，如果是用back返回过去的则不存在用setResult传递data值
+                activity.setResult(RESULT_OK,data);
+                //销毁登录界面
+                activity.finish();
+                //跳转到主界面，登录成功的状态传递到 MainActivity 中
+                activity.startActivity(data);
             }
         });
     }
 
 
 
-    private static class MyHandler extends Handler {
-        WeakReference<AppCompatActivity> reference;
-
-        public MyHandler(AppCompatActivity activity) {
-            reference = new WeakReference<>(activity);
-        }
-        public void handleMessage(Message msg) {
-            RegisterActivity activity = (RegisterActivity) reference.get();
-            User_Info ui = (User_Info) msg.obj;
-            Map<String, String> mp = new HashMap<String, String>();
-            mp.put("name", ui.Username);
-            mp.put("password", MD5Utils.md5(ui.Password));
-            mp.put("email", ui.Email);
-            String sri = HttpUtils.sendPostRequest(mp, "UTF-8", "/api/user/register");
-            if (sri != "Failed") {
-                try {
-                    JSONObject jo = new JSONObject(sri);
-                    String MSG = jo.get("msg").toString();
-                    if (MSG.equals("Success!")) {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try{
-                                    Thread.sleep(1000);
-                                    activity.finish();
-                                } catch (Exception e) {
-                                }
-                            }
-                        }).start();
-                    }
-                } catch (JSONException e) {
-                }
-            }
-        }
-    }
     private class Recycler extends RecyclerView.Adapter<Recycler.ViewHolder> {
 
         private List<Item> mItemList;
-        private int mposition=-2;
+        private int mposition=0;
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public TextView Name;
