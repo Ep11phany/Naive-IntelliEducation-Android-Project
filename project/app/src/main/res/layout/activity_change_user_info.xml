@@ -28,4 +28,16 @@
             android:layout_marginLeft="-40dp"
             android:src="@drawable/info_delete" />
     </LinearLayout>
+    <Button
+        android:id="@+id/tv_save"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="500dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_gravity="center_horizontal"
+        android:text="保  存"
+        android:background="@android:color/holo_blue_dark"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"/>
 </LinearLayout>
