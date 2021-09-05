@@ -84,7 +84,7 @@ public class InstanceListFragment extends Fragment {
         public Recycler.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.instance_item, parent, false);
             Recycler.ViewHolder holder = new Recycler.ViewHolder(view);
-            holder.Label.setOnClickListener(new View.OnClickListener() {//对加载的子项注册监听事件
+            view.setOnClickListener(new View.OnClickListener() {//对加载的子项注册监听事件
                 @Override
                 public void onClick(View v) {
                     int position = holder.getAdapterPosition();

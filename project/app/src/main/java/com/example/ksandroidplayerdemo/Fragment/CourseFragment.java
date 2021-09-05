@@ -5,6 +5,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Dialog;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -243,7 +244,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.subject_button, parent, false);
             ViewHolder holder = new ViewHolder(view);
-            holder.Name.setOnClickListener(new View.OnClickListener() {//对加载的子项注册监听事件
+            view.setOnClickListener(new View.OnClickListener() {//对加载的子项注册监听事件
                 @Override
                 public void onClick(View v) {
                     int position = holder.getAdapterPosition();
@@ -308,7 +309,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
     public class Recycler1 extends RecyclerView.Adapter<Recycler1.ViewHolder> {
 
         private List<Item> mItemList;
-
+        private int mposition=0;
         public class ViewHolder extends RecyclerView.ViewHolder {
             public TextView Name;
             public ViewHolder(View view) {
@@ -325,13 +326,15 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.subjet_label, parent, false);
             ViewHolder holder = new ViewHolder(view);
-            holder.Name.setOnClickListener(new View.OnClickListener() {//对加载的子项注册监听事件
+            view.setOnClickListener(new View.OnClickListener() {//对加载的子项注册监听事件
                 @Override
                 public void onClick(View v) {
                     int position = holder.getAdapterPosition();
                     String sub=mItemList.get(position).getName();
                     //按钮事件
+                    mposition=holder.getAdapterPosition();
                     SubViewPager.setCurrentItem(position);
+                    notifyDataSetChanged();
                 }
             });
             return holder;
@@ -341,6 +344,11 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         public void onBindViewHolder(ViewHolder holder, int position) {
             Item item = mItemList.get(position);
             holder.Name.setText(item.getName());
+            if (mposition != position) {
+                holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            }else if (mposition ==  position) {
+                holder.itemView.setBackgroundColor(Color.parseColor("#30B4FF"));
+            }
         }
 
         @Override

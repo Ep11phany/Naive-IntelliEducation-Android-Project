@@ -74,8 +74,8 @@ public class ResultActivity extends AppCompatActivity {
                 try {
                     Message msg = Message.obtain();
                     HashMap<String, String> hm = new HashMap<String, String>();
-                    hm.put("course", subject);//tobe changed
-                    hm.put("searchKey", searchKey);//tobe changed
+                    hm.put("course", subject);
+                    hm.put("searchKey", searchKey);
                     msg.obj = hm;
                     mHandler.handleMessage(msg);
                 } catch (Exception e) {

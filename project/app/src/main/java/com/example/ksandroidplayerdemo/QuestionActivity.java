@@ -139,10 +139,6 @@ public class QuestionActivity extends AppCompatActivity {
         public Recycler.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.subject_button, parent, false);
             Recycler.ViewHolder holder = new Recycler.ViewHolder(view);
-
-
-
-
             view.setOnClickListener(new View.OnClickListener() {//对加载的子项注册监听事件
                 @Override
                 public void onClick(View v) {

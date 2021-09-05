@@ -28,7 +28,7 @@ import java.lang.ref.WeakReference;
 
 public class LoginActivity extends AppCompatActivity{
     private TextView tv_main_title;//标题
-    private TextView tv_back,tv_register,tv_find_psw,tv_hint;//返回键,显示的注册，找回密码
+    private TextView tv_back,tv_register,tv_find_psw,tv_hint,tv_question;//返回键,显示的注册，找回密码
     private Button btn_login;//登录按钮
     private String userName,psw,spPsw;//获取的用户名，密码，加密密码
     private EditText et_user_name,et_psw;//编辑框
@@ -48,6 +48,8 @@ public class LoginActivity extends AppCompatActivity{
         tv_main_title=findViewById(R.id.tv_main_title);
         tv_main_title.setText("登录");
         tv_back=findViewById(R.id.tv_back);
+        tv_question=findViewById(R.id.tv_question);
+        tv_question.setVisibility(View.INVISIBLE);
         //从activity_login.xml中获取的
         tv_register=findViewById(R.id.tv_register);
         tv_find_psw=findViewById(R.id.tv_find_psw);
