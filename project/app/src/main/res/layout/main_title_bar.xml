@@ -21,14 +21,15 @@
         android:textColor="@android:color/white"
         android:textSize="20sp"/>
     <TextView
-        android:text="Q"
+        android:visibility="invisible"
+        android:background="@drawable/search"
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:layout_centerVertical="true"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="10dp"
         android:id="@+id/tv_question"
         android:layout_marginTop="20dp"
         android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
+        android:layout_width="30dp"
         android:layout_height="30dp" />
 </RelativeLayout>
