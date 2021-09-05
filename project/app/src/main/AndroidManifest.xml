@@ -49,5 +49,6 @@
         <activity android:name=".UserInfoActivity"></activity>
         <activity android:name=".EntityActivity"></activity>
       <activity android:name=".QuestionActivity"></activity>
+      <activity android:name=".ResultActivity"></activity>
     </application>
 </manifest>

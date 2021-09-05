@@ -177,7 +177,7 @@ public class LoginActivity extends AppCompatActivity{
                         //保存登录状态，在界面保存登录的用户名 定义个方法 saveLoginStatus boolean 状态 , userName 用户名;
                         activity.saveLoginStatus(true, ui.Username);
                         //登录成功后关闭此页面进入主页
-                        Intent data=new Intent();
+                        Intent data=new Intent(activity, MainActivity.class);
                         //datad.putExtra( ); name , value ;
                         data.putExtra("isLogin",true);
                         //RESULT_OK为Activity系统常量，状态码为-1
@@ -186,7 +186,7 @@ public class LoginActivity extends AppCompatActivity{
                         //销毁登录界面
                         activity.finish();
                         //跳转到主界面，登录成功的状态传递到 MainActivity 中
-                        activity.startActivity(new Intent(activity, MainActivity.class));
+                        activity.startActivity(data);
                         return;
 
                     }
