@@ -1,14 +1,12 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="65dp"
-    android:layout_height="30dp"
+    android:layout_height="20dp"
     android:layout_marginTop="10dp"
     android:gravity="center"
+    android:background="@drawable/textview_border"
     >
-    <LinearLayout
-        android:layout_width="65dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/textview_border">
+
     <TextView
         android:layout_width="40dp"
         android:layout_height="wrap_content"
@@ -27,5 +25,4 @@
             android:text="+"
             android:textColor="@android:color/black"
             android:textSize="15dp" />
-    </LinearLayout>
 </LinearLayout>

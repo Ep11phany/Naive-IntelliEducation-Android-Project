@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -38,6 +39,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import android.content.res.Resources;
 
 public class QuestionActivity extends AppCompatActivity {
     private EditText Question;
@@ -157,6 +159,7 @@ public class QuestionActivity extends AppCompatActivity {
     private class Recycler extends RecyclerView.Adapter<Recycler.ViewHolder> {
 
         private List<Item> mItemList;
+        private int mposition=-2;
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public TextView Name;
@@ -176,11 +179,16 @@ public class QuestionActivity extends AppCompatActivity {
         public Recycler.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.subject_button, parent, false);
             Recycler.ViewHolder holder = new Recycler.ViewHolder(view);
-            holder.Name.setOnClickListener(new View.OnClickListener() {//对加载的子项注册监听事件
+
+
+
+
+            view.setOnClickListener(new View.OnClickListener() {//对加载的子项注册监听事件
                 @Override
                 public void onClick(View v) {
                     int position = holder.getAdapterPosition();
                     //按钮事件
+                    mposition=holder.getAdapterPosition();
                     String sub=mItemList.get(position).getName();
                     switch (sub){
                         case "语文":
@@ -210,18 +218,29 @@ public class QuestionActivity extends AppCompatActivity {
                         case "地理":
                             subject="geo";
                             break;
-                    }
+                    }notifyDataSetChanged();
 
                 }
+
+
             });
             return holder;
         }
+
 
         @Override
         public void onBindViewHolder(Recycler.ViewHolder holder, int position) {
             Item item = mItemList.get(position);
             holder.Name.setText(item.getName());
-           holder.symbol.setText("");
+            holder.symbol.setText("");
+            Resources resources = getResources();
+            Drawable selected = resources.getDrawable(R.drawable.textview_border_selected);
+            Drawable unsel = resources.getDrawable(R.drawable.textview_border);
+            if (mposition != position) {
+                holder.itemView.setBackground(unsel);
+            }else if (mposition ==  position) {
+                holder.itemView.setBackground(selected);
+            }
         }
 
         @Override
