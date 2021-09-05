@@ -46,7 +46,7 @@ import com.example.ksandroidplayerdemo.bean.Item;
 
 public class EntityActivity extends FragmentActivity implements View.OnClickListener{
 
-    private TextView tv_main_title;//标题
+    private TextView tv_entity_title;//标题
     private TextView tv_back;//返回按钮
     private RelativeLayout title_bar;
     private RelativeLayout entity_body;
@@ -57,6 +57,9 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
     private TextView top_bar_text_question;
     private RelativeLayout top_bar_question_btn;
     private LinearLayout entity_top_bar;
+
+    String course;
+    String label;
 
 
 
@@ -75,12 +78,17 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entity);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        Intent intent = getIntent();
+        course = intent.getStringExtra("course");
+        label = intent.getStringExtra("label");
         init();
+        setSelectStatus(0);
     }
 
     private void init(){
-        tv_main_title=findViewById(R.id.tv_main_title);
-        title_bar=findViewById(R.id.title_bar);
+        tv_entity_title=findViewById(R.id.tv_entity_title);
+        tv_entity_title.setText(label);
+        title_bar=findViewById(R.id.entity_title_bar);
 
         entity_body = findViewById(R.id.entity_body);
         top_bar_text_property = findViewById(R.id.top_bar_text_property);
@@ -101,15 +109,12 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.top_bar_property_btn:
-                //getSupportFragmentManager().beginTransaction().add(R.id.main_body,new CourseFragment()).commit();
                 setSelectStatus(0);
                 break;
             case R.id.top_bar_relationship_btn:
-                //getSupportFragmentManager().beginTransaction().add(R.id.main_body,new ExercisesFragment()).commit();
                 setSelectStatus(1);
                 break;
             case R.id.top_bar_question_btn:
-                //getSupportFragmentManager().beginTransaction().add(R.id.main_body,new MyinfoFragment()).commit();
                 setSelectStatus(2);
                 break;
         }
@@ -127,13 +132,13 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                 top_bar_text_property.setTextColor(Color.parseColor("#666666"));
                 top_bar_text_relationship.setTextColor(Color.parseColor("#0097F7"));
                 top_bar_text_question.setTextColor(Color.parseColor("#666666"));
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new RelationshipFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.entity_body,new RelationshipFragment()).commit();
                 break;
             case 2:
                 top_bar_text_property.setTextColor(Color.parseColor("#666666"));
                 top_bar_text_relationship.setTextColor(Color.parseColor("#666666"));
                 top_bar_text_question.setTextColor(Color.parseColor("#0097F7"));
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new QuestionFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.entity_body,new QuestionFragment()).commit();
                 break;
         }
     }

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <!--标题栏-->
-        <include layout="@layout/main_title_bar"/>
+        <include layout="@layout/entity_title_bar"/>
         <!--放置Fragment的main_body-->
         <RelativeLayout
             android:id="@+id/entity_body"
@@ -22,64 +22,71 @@
 
     <LinearLayout
         android:id="@+id/entity_top_bar"
-        android:layout_alignParentTop="true"
-        android:background="#F2F2F2"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="55dp">
+        android:layout_height="55dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="50dp"
+        android:background="#F2F2F2"
+        android:orientation="horizontal">
+
         <RelativeLayout
-            android:layout_weight="1"
             android:id="@+id/top_bar_property_btn"
             android:layout_width="0dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
             <TextView
                 android:id="@+id/top_bar_text_property"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
                 android:layout_marginBottom="3dp"
                 android:gravity="center"
                 android:singleLine="true"
                 android:text="属 性"
                 android:textColor="#666666"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/top_bar_relationship_btn"
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
             <TextView
                 android:id="@+id/top_bar_text_relationship"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
                 android:layout_marginBottom="3dp"
                 android:gravity="center"
                 android:singleLine="true"
                 android:text="关 系"
                 android:textColor="#666666"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
         </RelativeLayout>
+
         <RelativeLayout
-            android:layout_weight="1"
             android:id="@+id/top_bar_question_btn"
             android:layout_width="0dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
             <TextView
                 android:id="@+id/top_bar_text_question"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
                 android:layout_marginBottom="3dp"
                 android:gravity="center"
                 android:singleLine="true"
                 android:text="试 题"
                 android:textColor="#666666"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
         </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

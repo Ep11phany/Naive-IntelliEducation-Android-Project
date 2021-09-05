@@ -91,7 +91,7 @@ public class InstanceListFragment extends Fragment {
                     //按钮事件
 
                     Activity activity=getActivity();
-                    Intent data=new Intent();
+                    Intent data=new Intent(activity, EntityActivity.class);
                     //datad.putExtra( ); name , value ;
                     data.putExtra("course", subject);
                     data.putExtra("label", instanceList.get(position).get("label"));
@@ -101,7 +101,7 @@ public class InstanceListFragment extends Fragment {
                     //销毁登录界面
                     //?activity.finish();
                     //跳转到主界面，登录成功的状态传递到 MainActivity 中
-                    activity.startActivity(new Intent(activity, EntityActivity.class));
+                    activity.startActivity(data);
                 }
             });
             return holder;
