@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--这里代码的是创建一个标题栏，左边是返回键-->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/entity_title_bar"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@android:color/transparent">
+    <!--一个是显示返回键，一个是显示标题框-->
+    <TextView
+        android:id="@+id/tv_back_entity"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/go_back_selector" />
+    <TextView
+        android:id="@+id/tv_entity_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"/>
+</RelativeLayout>
