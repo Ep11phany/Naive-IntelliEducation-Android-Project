@@ -47,7 +47,7 @@ import com.example.ksandroidplayerdemo.bean.Item;
 public class EntityActivity extends FragmentActivity implements View.OnClickListener{
 
     private TextView tv_entity_title;//标题
-    private TextView tv_back;//返回按钮
+    private TextView tv_back_entity;//返回按钮
     private RelativeLayout title_bar;
     private RelativeLayout entity_body;
     private TextView top_bar_text_property;
@@ -86,9 +86,16 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
     }
 
     private void init(){
-        tv_entity_title=findViewById(R.id.tv_entity_title);
+        tv_entity_title = findViewById(R.id.tv_entity_title);
         tv_entity_title.setText(label);
-        title_bar=findViewById(R.id.entity_title_bar);
+        tv_back_entity = findViewById(R.id.tv_back_entity);
+        tv_back_entity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EntityActivity.this.finish();
+            }
+        });
+        title_bar = findViewById(R.id.entity_title_bar);
 
         entity_body = findViewById(R.id.entity_body);
         top_bar_text_property = findViewById(R.id.top_bar_text_property);
