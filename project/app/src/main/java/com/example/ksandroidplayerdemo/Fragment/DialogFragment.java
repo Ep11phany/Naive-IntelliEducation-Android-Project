@@ -96,24 +96,26 @@ public class DialogFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String question=editText.getText().toString().trim();
-                editText.setText("");
-                Dialogs.add(new Pair<String,String>("user",question));
-                setRecyclerView();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Message msg = Message.obtain();
-                            HashMap<String, String> hm = new HashMap<String, String>();
-                            hm.put("course", subject);
-                            hm.put("inputQuestion", question);
-                            msg.obj = hm;
-                            mHandler.handleMessage(msg);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                if(!question.equals("")){
+                    editText.setText("");
+                    Dialogs.add(new Pair<String,String>("user",question));
+                    setRecyclerView();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Message msg = Message.obtain();
+                                HashMap<String, String> hm = new HashMap<String, String>();
+                                hm.put("course", subject);
+                                hm.put("inputQuestion", question);
+                                msg.obj = hm;
+                                mHandler.handleMessage(msg);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                }).start();
+                    }).start();
+                }
             }
         });
         radapter = new Recycler1(SubjectList);
@@ -126,25 +128,6 @@ public class DialogFragment extends Fragment {
     }
 
 
-    /**
-     * RecyclerView 移动到当前位置，
-     *
-     * @param manager   设置RecyclerView对应的manager
-     * @param mRecyclerView  当前的RecyclerView
-     * @param n  要跳转的位置
-     */
-    public static void MoveToPosition(LinearLayoutManager manager, RecyclerView mRecyclerView, int n) {
-        int firstItem = manager.findFirstVisibleItemPosition();
-        int lastItem = manager.findLastVisibleItemPosition();
-        if (n <= firstItem) {
-            mRecyclerView.scrollToPosition(n);
-        } else if (n <= lastItem) {
-            int top = mRecyclerView.getChildAt(n - firstItem).getTop();
-            mRecyclerView.scrollBy(0, top);
-        } else {
-            mRecyclerView.scrollToPosition(n);
-        }
-    }
 
     private void setRecyclerView(){
         adapter=new Recycler(Dialogs);
@@ -153,7 +136,6 @@ public class DialogFragment extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        MoveToPosition((LinearLayoutManager) recyclerView.getLayoutManager(),recyclerView,Dialogs.size());
         recyclerView.scrollToPosition(Dialogs.size()-1);
     }
 
