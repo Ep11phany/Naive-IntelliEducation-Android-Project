@@ -4,6 +4,7 @@ package com.example.ksandroidplayerdemo.Fragment;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -24,7 +26,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
-
+import android.util.AttributeSet;
 import com.example.ksandroidplayerdemo.bean.Item;
 
 import com.example.ksandroidplayerdemo.R;
@@ -85,7 +87,16 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         public int getCount() {
             return SubFragments.size();
         }
+
+
+
     }
+
+
+
+
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -98,7 +109,25 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         initSubject();
         SubViewPager.setOffscreenPageLimit(SubFragments.size());
         SubViewPager.setAdapter(new MyFragmentAdapter(getChildFragmentManager()));
+        SubViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 
+            @Override
+            public void onPageSelected(int position) {
+                //position只有当页面真正切换的时候，才会调用这个方法，如果页面index一直没有变，则不会调用改方法
+                radapter.mposition=position;
+                radapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
         radapter = new Recycler1(SubjectList);
         recyclerView = (RecyclerView) view.findViewById(R.id.viewpage);
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
