@@ -125,6 +125,27 @@ public class DialogFragment extends Fragment {
         return view;
     }
 
+
+    /**
+     * RecyclerView 移动到当前位置，
+     *
+     * @param manager   设置RecyclerView对应的manager
+     * @param mRecyclerView  当前的RecyclerView
+     * @param n  要跳转的位置
+     */
+    public static void MoveToPosition(LinearLayoutManager manager, RecyclerView mRecyclerView, int n) {
+        int firstItem = manager.findFirstVisibleItemPosition();
+        int lastItem = manager.findLastVisibleItemPosition();
+        if (n <= firstItem) {
+            mRecyclerView.scrollToPosition(n);
+        } else if (n <= lastItem) {
+            int top = mRecyclerView.getChildAt(n - firstItem).getTop();
+            mRecyclerView.scrollBy(0, top);
+        } else {
+            mRecyclerView.scrollToPosition(n);
+        }
+    }
+
     private void setRecyclerView(){
         adapter=new Recycler(Dialogs);
         recyclerView = (RecyclerView) view.findViewById(R.id.dialogs);
@@ -132,6 +153,8 @@ public class DialogFragment extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        MoveToPosition((LinearLayoutManager) recyclerView.getLayoutManager(),recyclerView,Dialogs.size());
+        recyclerView.scrollToPosition(Dialogs.size()-1);
     }
 
     public class Recycler1 extends RecyclerView.Adapter<Recycler1.ViewHolder> {
@@ -158,7 +181,6 @@ public class DialogFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     int position = holder.getAdapterPosition();
-
 
                     //按钮事件
                     String sub=mItemList.get(position).getName();
@@ -289,7 +311,7 @@ public class DialogFragment extends Fragment {
 
         public void handleMessage(Message msg) {
             Map<String, String> mp = (HashMap) msg.obj;
-            String sri = HttpUtils.sendGetRequest(mp, "UTF-8", "/api/edukg/qa");
+            String sri = HttpUtils.sendPostRequest(mp, "UTF-8", "/api/edukg/qa");
             if (sri != "Failed") {
                 try {
                     JSONObject jo = new JSONObject(sri);
