@@ -23,9 +23,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.example.ksandroidplayerdemo.EntityFragment.PropertyFragment;
 import com.example.ksandroidplayerdemo.EntityFragment.RelationshipFragment;
 import com.example.ksandroidplayerdemo.EntityFragment.QuestionFragment;
+import com.example.ksandroidplayerdemo.Fragment.InstanceListFragment;
 import com.example.ksandroidplayerdemo.Fragment.SubjectFragment;
 import com.example.ksandroidplayerdemo.utils.HttpUtils;
 import com.example.ksandroidplayerdemo.utils.MD5Utils;
@@ -46,8 +48,10 @@ import com.example.ksandroidplayerdemo.bean.Item;
 
 public class EntityActivity extends FragmentActivity implements View.OnClickListener{
 
+    private EntityActivity.MyHandler myHandler;
+
     private TextView tv_entity_title;//标题
-    private TextView tv_back;//返回按钮
+    private TextView tv_back_entity;//返回按钮
     private RelativeLayout title_bar;
     private RelativeLayout entity_body;
     private TextView top_bar_text_property;
@@ -61,18 +65,8 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
     String course;
     String label;
 
-
-
-    private TextView entityName;
-    private String entityUri;
-    private List<Item> propertyLabel;
-    private List<Item> propertyValue;
-    private List<Item> propertyUri;
-    private List<Item> relationshipLabel;
-    private List<Item> relationshipUri;
-    private List<Item> otherKind;           //subject or object
-    private List<Item> otherName;
-    private List<Item> otherUri;
+    List<Map<String, String>> propertyList;
+    List<Map<String, String>> relationshipList;
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -82,13 +76,30 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         course = intent.getStringExtra("course");
         label = intent.getStringExtra("label");
         init();
-        setSelectStatus(0);
+        myHandler = new MyHandler(this);
+        new Thread(new Runnable() {
+            public void run() {
+                Message msg = Message.obtain();
+                HashMap<String, String> hm = new HashMap<String, String>();
+                hm.put("course", course);
+                hm.put("name", label);
+                msg.obj = hm;
+                myHandler.handleMessage(msg);
+            }
+        }).start();
     }
 
     private void init(){
-        tv_entity_title=findViewById(R.id.tv_entity_title);
+        tv_entity_title = findViewById(R.id.tv_entity_title);
         tv_entity_title.setText(label);
-        title_bar=findViewById(R.id.entity_title_bar);
+        tv_back_entity = findViewById(R.id.tv_back_entity);
+        tv_back_entity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EntityActivity.this.finish();
+            }
+        });
+        title_bar = findViewById(R.id.entity_title_bar);
 
         entity_body = findViewById(R.id.entity_body);
         top_bar_text_property = findViewById(R.id.top_bar_text_property);
@@ -126,7 +137,7 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                 top_bar_text_property.setTextColor(Color.parseColor("#0097F7"));
                 top_bar_text_relationship.setTextColor(Color.parseColor("#666666"));
                 top_bar_text_question.setTextColor(Color.parseColor("#666666"));
-                getSupportFragmentManager().beginTransaction().replace(R.id.entity_body,new PropertyFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.entity_body,new PropertyFragment(propertyList)).commit();
                 break;
             case 1:
                 top_bar_text_property.setTextColor(Color.parseColor("#666666"));
@@ -140,6 +151,30 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                 top_bar_text_question.setTextColor(Color.parseColor("#0097F7"));
                 getSupportFragmentManager().beginTransaction().replace(R.id.entity_body,new QuestionFragment()).commit();
                 break;
+        }
+    }
+
+    private class MyHandler extends Handler {
+        WeakReference<FragmentActivity> reference;
+        public MyHandler(FragmentActivity activity) {
+            reference = new WeakReference<>(activity);
+        }
+        public void handleMessage(Message msg) {
+            Map<String,String> mp=(HashMap)msg.obj;
+            String sri= HttpUtils.sendGetRequest(mp,"UTF-8","/api/edukg/infoInstance");
+            if(sri!="Failed"){
+                try {
+                    JSONObject jo = new JSONObject(sri);
+                    String MSG=jo.get("msg").toString();
+                    if(MSG.equals("成功")){
+                        JSONObject data = jo.getJSONObject("data");
+                        propertyList = (List<Map<String, String>>) JSONArray.parse(data.get("property").toString());
+                        relationshipList = (List<Map<String, String>>) JSONArray.parse(data.get("content").toString());
+                        setSelectStatus(0);
+                    }
+                } catch (JSONException e) {
+                }
+            }
         }
     }
 }
