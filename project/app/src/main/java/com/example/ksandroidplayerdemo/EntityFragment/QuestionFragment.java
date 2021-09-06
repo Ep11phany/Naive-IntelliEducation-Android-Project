@@ -37,4 +37,62 @@ import java.util.Iterator;
 import java.util.Map;
 import com.alibaba.fastjson.*;
 public class QuestionFragment extends Fragment {
+    private List<Map<String,String>> questionList;
+
+    private RecyclerView questionView;
+    private QuestionFragment.QuestionAdapter adapter;
+    public View view;
+
+    public QuestionFragment(List<Map<String, String>> qList) {questionList = qList;}
+
+    public class QuestionAdapter extends RecyclerView.Adapter<QuestionFragment.QuestionAdapter.ViewHolder> {
+
+        private List<Map<String,String>> qList;
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            public TextView questionBody;
+            public TextView questionAnswer;
+            public ViewHolder(View view) {
+                super(view);
+                questionBody = (TextView) view.findViewById(R.id.question_body);
+                questionAnswer = (TextView) view.findViewById(R.id.question_answer);
+            }
+        }
+
+        public QuestionAdapter(List<Map<String, String>> q) {
+            qList = q;
+        }
+
+        @Override
+        public QuestionFragment.QuestionAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.entity_question_item, parent, false);
+            QuestionFragment.QuestionAdapter.ViewHolder holder = new QuestionFragment.QuestionAdapter.ViewHolder(view);
+            return holder;
+        }
+
+        @Override
+        public void onBindViewHolder(QuestionFragment.QuestionAdapter.ViewHolder holder, int position) {
+            String body = qList.get(position).get("qBody");
+            holder.questionBody.setText(body);
+            String answer = qList.get(position).get("qAnswer");
+            holder.questionAnswer.setText(answer);
+        }
+
+        @Override
+        public int getItemCount() {
+            return qList.size();
+        }
+    }
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.entity_question, container, false);
+        adapter = new QuestionFragment.QuestionAdapter(questionList);
+        questionView = (RecyclerView) view.findViewById(R.id.question_list);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        questionView.setLayoutManager(layoutManager);
+        questionView.setAdapter(adapter);
+        return view;
+    }
 }
