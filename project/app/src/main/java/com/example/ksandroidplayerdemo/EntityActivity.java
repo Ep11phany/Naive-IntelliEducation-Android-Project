@@ -143,7 +143,7 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                 top_bar_text_property.setTextColor(Color.parseColor("#666666"));
                 top_bar_text_relationship.setTextColor(Color.parseColor("#0097F7"));
                 top_bar_text_question.setTextColor(Color.parseColor("#666666"));
-                getSupportFragmentManager().beginTransaction().replace(R.id.entity_body,new RelationshipFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.entity_body,new RelationshipFragment(relationshipList)).commit();
                 break;
             case 2:
                 top_bar_text_property.setTextColor(Color.parseColor("#666666"));
