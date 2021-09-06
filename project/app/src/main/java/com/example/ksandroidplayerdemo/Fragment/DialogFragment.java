@@ -92,6 +92,8 @@ public class DialogFragment extends Fragment {
         editText=(EditText)view.findViewById(R.id.user_word);
         Enter=(ImageView) view.findViewById(R.id.enter);
         setRecyclerView();
+
+
         Enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,7 +101,13 @@ public class DialogFragment extends Fragment {
                 if(!question.equals("")){
                     editText.setText("");
                     Dialogs.add(new Pair<String,String>("user",question));
-                    setRecyclerView();
+                    adapter=new Recycler(Dialogs);
+                    recyclerView = (RecyclerView) view.findViewById(R.id.dialogs);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+                    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                    recyclerView.setLayoutManager(layoutManager);
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.scrollToPosition(Dialogs.size()-1);
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -108,8 +116,9 @@ public class DialogFragment extends Fragment {
                                 HashMap<String, String> hm = new HashMap<String, String>();
                                 hm.put("course", subject);
                                 hm.put("inputQuestion", question);
-                                msg.obj = hm;
-                                mHandler.handleMessage(msg);
+                                String sri = HttpUtils.sendPostRequest(hm, "UTF-8", "/api/edukg/qa");
+                                msg.obj = sri;
+                                mHandler.sendMessage(msg);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -292,8 +301,7 @@ public class DialogFragment extends Fragment {
         }
 
         public void handleMessage(Message msg) {
-            Map<String, String> mp = (HashMap) msg.obj;
-            String sri = HttpUtils.sendPostRequest(mp, "UTF-8", "/api/edukg/qa");
+            String sri = (String) msg.obj;
             if (sri != "Failed") {
                 try {
                     JSONObject jo = new JSONObject(sri);
@@ -301,8 +309,19 @@ public class DialogFragment extends Fragment {
                     if (MSG.equals("成功")) {
                         String str = jo.get("data").toString();
                         Map<String, String> map = ((List<Map<String, String>>) JSONArray.parse(jo.get("data").toString())).get(0);
-                        Dialogs.add(new Pair<String,String>("ai",map.get("value")));
-                        setRecyclerView();
+                        if(!map.get("value").equals("")){
+                            Dialogs.add(new Pair<String,String>("ai",map.get("value")));
+                        }
+                        else{
+                            Dialogs.add(new Pair<String,String>("ai","我不知道"));
+                        }
+                        adapter=new Recycler(Dialogs);
+                        recyclerView = (RecyclerView) view.findViewById(R.id.dialogs);
+                        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+                        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                        recyclerView.setLayoutManager(layoutManager);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.scrollToPosition(Dialogs.size()-1);
                         return;
                     }
                 } catch (JSONException e) {

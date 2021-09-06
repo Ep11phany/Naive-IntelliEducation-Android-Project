@@ -91,7 +91,6 @@ public class HttpUtils {
     }
     public static String sendGetRequest(Map<String, String> params,String ecoding,String api) {
         try {
-
             StringBuilder Path = new StringBuilder(PATH + api);
             Path.append("?");
             for (Map.Entry<String, String> entry : params.entrySet()) {
