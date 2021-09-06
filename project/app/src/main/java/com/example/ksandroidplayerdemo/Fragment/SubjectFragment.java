@@ -40,7 +40,26 @@ public class SubjectFragment extends Fragment {
     private MyHandler myHandler;
     private List<Map<String,String>> lst;
     public SubjectFragment(String name) {
-        Subject=name;
+        if(name.equals("语文")){
+            Subject="chinese";
+        }else if (name.equals("数学")){
+            Subject="math";
+        }else if (name.equals("英语")){
+            Subject="english";
+        }else if (name.equals("物理")){
+            Subject="physics";
+        }else if (name.equals("化学")){
+            Subject="chemistry";
+        }else if (name.equals("生物")){
+            Subject="biology";
+        }else if (name.equals("政治")){
+            Subject="politics";
+        }else if (name.equals("历史")){
+            Subject="history";
+        }else if (name.equals("地理")){
+            Subject="geo";
+        }
+
     }
 
 
@@ -56,7 +75,7 @@ public class SubjectFragment extends Fragment {
                 try{
                     Message msg = Message.obtain();
                     HashMap<String ,String> hm=new HashMap<String ,String>();
-                    hm.put("course","chinese");//tobe changed
+                    hm.put("course",Subject);
                     hm.put("searchKey","学");//tobe changed
                     msg.obj=hm;
                     myHandler.handleMessage(msg);

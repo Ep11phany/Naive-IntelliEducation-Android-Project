@@ -96,24 +96,26 @@ public class DialogFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String question=editText.getText().toString().trim();
-                editText.setText("");
-                Dialogs.add(new Pair<String,String>("user",question));
-                setRecyclerView();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Message msg = Message.obtain();
-                            HashMap<String, String> hm = new HashMap<String, String>();
-                            hm.put("course", subject);
-                            hm.put("inputQuestion", question);
-                            msg.obj = hm;
-                            mHandler.handleMessage(msg);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                if(!question.equals("")){
+                    editText.setText("");
+                    Dialogs.add(new Pair<String,String>("user",question));
+                    setRecyclerView();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Message msg = Message.obtain();
+                                HashMap<String, String> hm = new HashMap<String, String>();
+                                hm.put("course", subject);
+                                hm.put("inputQuestion", question);
+                                msg.obj = hm;
+                                mHandler.handleMessage(msg);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                }).start();
+                    }).start();
+                }
             }
         });
         radapter = new Recycler1(SubjectList);
@@ -125,6 +127,8 @@ public class DialogFragment extends Fragment {
         return view;
     }
 
+
+
     private void setRecyclerView(){
         adapter=new Recycler(Dialogs);
         recyclerView = (RecyclerView) view.findViewById(R.id.dialogs);
@@ -132,6 +136,7 @@ public class DialogFragment extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        recyclerView.scrollToPosition(Dialogs.size()-1);
     }
 
     public class Recycler1 extends RecyclerView.Adapter<Recycler1.ViewHolder> {
@@ -158,7 +163,6 @@ public class DialogFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     int position = holder.getAdapterPosition();
-
 
                     //按钮事件
                     String sub=mItemList.get(position).getName();
@@ -289,7 +293,7 @@ public class DialogFragment extends Fragment {
 
         public void handleMessage(Message msg) {
             Map<String, String> mp = (HashMap) msg.obj;
-            String sri = HttpUtils.sendGetRequest(mp, "UTF-8", "/api/edukg/qa");
+            String sri = HttpUtils.sendPostRequest(mp, "UTF-8", "/api/edukg/qa");
             if (sri != "Failed") {
                 try {
                     JSONObject jo = new JSONObject(sri);
