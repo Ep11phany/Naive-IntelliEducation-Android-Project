@@ -16,7 +16,8 @@
             android:id="@+id/main_body"
             android:background="@android:color/white"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="55dp">
         </RelativeLayout>
     </LinearLayout>
 
@@ -68,7 +69,7 @@
                 android:layout_marginBottom="3dp"
                 android:gravity="center"
                 android:singleLine="true"
-                android:text="习 题"
+                android:text="问 答"
                 android:textColor="#666666"
                 android:textSize="14sp"/>
             <ImageView
@@ -79,7 +80,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="3dp"
                 android:id="@+id/bottom_bar_image_exercises"
-                android:src="@drawable/main_exercises_icon"/>
+                android:src="@drawable/main_question_icon"/>
         </RelativeLayout>
         <RelativeLayout
             android:layout_weight="1"

@@ -29,12 +29,13 @@ android:layout_height="match_parent"
         android:layout_marginRight="30dp"
         android:layout_gravity= "center_vertical|left"
         >
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/viewpage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_gravity= "center_vertical|left"/>
+            android:layout_gravity="center_vertical|left"
+            android:gravity="center" />
     </RelativeLayout>
     <TextView
         android:id="@+id/plus_btn"
