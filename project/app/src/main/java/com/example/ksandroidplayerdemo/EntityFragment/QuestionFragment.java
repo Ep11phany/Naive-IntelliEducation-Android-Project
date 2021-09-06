@@ -95,4 +95,6 @@ public class QuestionFragment extends Fragment {
         questionView.setAdapter(adapter);
         return view;
     }
+
+
 }
