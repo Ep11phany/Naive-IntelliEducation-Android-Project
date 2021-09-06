@@ -56,7 +56,7 @@ public class SubjectFragment extends Fragment {
                 try{
                     Message msg = Message.obtain();
                     HashMap<String ,String> hm=new HashMap<String ,String>();
-                    hm.put("course","chinese");//tobe changed
+                    hm.put("course",Subject);
                     hm.put("searchKey","学");//tobe changed
                     msg.obj=hm;
                     myHandler.handleMessage(msg);
