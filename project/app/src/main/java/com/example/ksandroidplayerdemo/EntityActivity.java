@@ -3,7 +3,9 @@ package com.example.ksandroidplayerdemo;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -61,6 +63,7 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
     private TextView top_bar_text_question;
     private RelativeLayout top_bar_question_btn;
     private LinearLayout entity_top_bar;
+    private ImageView favorite;
 
     String course;
     String label;
@@ -102,6 +105,17 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         });
         title_bar = findViewById(R.id.entity_title_bar);
 
+        favorite=findViewById(R.id.favorite);
+        Resources resources = getResources();
+        Drawable favor = resources.getDrawable(R.drawable.favorite);
+        Drawable unfavor = resources.getDrawable(R.drawable.myinfo_favorite_icon);
+        favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                favorite.setBackground(favor);
+                //
+            }
+        });
         entity_body = findViewById(R.id.entity_body);
         top_bar_text_property = findViewById(R.id.top_bar_text_property);
         top_bar_property_btn = findViewById(R.id.top_bar_property_btn);
