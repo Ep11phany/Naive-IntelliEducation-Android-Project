@@ -37,27 +37,30 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import android.content.res.Resources;
 
+
+
 public class ResultActivity extends AppCompatActivity {
-    private EditText Question;
     //用户名，密码，再次输入的密码的控件的获取值
     private String searchKey;
     private MyHandler mHandler;
-    private Button query;
+    private TextView tv_main_title;
     private TextView tv_back;
     private RelativeLayout title_bar;
+    private TextView sort;
+    private TextView reverse_sort;
     private String subject;
     private List<Map<String, String>> lst = new ArrayList<>();
-    private Recycler adapter;
-    private RecyclerView recyclerView;
-    //标题布局
-    private RelativeLayout rl_title_bar;
 
 
     @Override
@@ -96,6 +99,36 @@ public class ResultActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        tv_main_title = (TextView) findViewById(R.id.tv_main_title);
+        tv_main_title.setText("“"+searchKey+"”"+"的搜索结果");
+
+        sort=findViewById(R.id.sort);
+        sort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Collections.sort(lst, new Comparator<Map<String,String>>() {
+                    public int compare(Map<String,String> o1, Map<String,String> o2) {
+                        Comparator<Object> com = Collator.getInstance(Locale.CHINA);
+                        return  ((Collator) com).compare(o1.get("label").toString(),o2.get("label").toString());
+                    };
+                });
+                getSupportFragmentManager().beginTransaction().replace(R.id.body, new InstanceListFragment(lst, subject)).commit();
+            }
+        });
+        reverse_sort=findViewById(R.id.reverse_sort);
+        reverse_sort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Collections.sort(lst, new Comparator<Map<String,String>>() {
+                    public int compare(Map<String,String> o1, Map<String,String> o2) {
+                        Comparator<Object> com = Collator.getInstance(Locale.CHINA);
+                        return  ((Collator) com).compare(o2.get("label").toString(),o1.get("label").toString());
+                    };
+                });
+                getSupportFragmentManager().beginTransaction().replace(R.id.body, new InstanceListFragment(lst, subject)).commit();
             }
         });
         title_bar = findViewById(R.id.title_bar);

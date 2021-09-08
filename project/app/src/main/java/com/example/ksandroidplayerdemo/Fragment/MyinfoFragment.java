@@ -17,7 +17,8 @@ import com.example.ksandroidplayerdemo.R;
 import com.example.ksandroidplayerdemo.SettingActivity;
 import com.example.ksandroidplayerdemo.UserInfoActivity;
 import com.example.ksandroidplayerdemo.utils.AnalysisUtils;
-
+import com.example.ksandroidplayerdemo.FavoriteActivity;
+import com.example.ksandroidplayerdemo.HistoryActivity;
 
 public class MyinfoFragment extends Fragment {
 
@@ -26,6 +27,7 @@ public class MyinfoFragment extends Fragment {
     private LinearLayout ll_head;
     private RelativeLayout rl_course_history;
     private RelativeLayout rl_setting;
+    private RelativeLayout rl_favorite;
     //private Context mContext;
 
     @Override
@@ -42,6 +44,7 @@ public class MyinfoFragment extends Fragment {
         iv_head_icon = (ImageView) view.findViewById(R.id.iv_head_icon);
         tv_user_name = (TextView) view.findViewById(R.id.tv_user_name);
         rl_course_history = (RelativeLayout) view.findViewById(R.id.rl_course_history);
+        rl_favorite = (RelativeLayout) view.findViewById(R.id.rl_favorite);
         rl_setting = (RelativeLayout) view.findViewById(R.id.rl_setting);
         setLoginParams(AnalysisUtils.readLoginStatus(getActivity()));
         ll_head.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +68,8 @@ public class MyinfoFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (AnalysisUtils.readLoginStatus(getActivity())) {
-                    Toast.makeText(getActivity(), "播放历史界面", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getActivity(), HistoryActivity.class);
+                    getActivity().startActivityForResult(intent, 1);
                 } else {
                     Toast.makeText(getActivity(), "您还未登录，请先登录", Toast.LENGTH_SHORT).show();
                 }
@@ -76,6 +80,17 @@ public class MyinfoFragment extends Fragment {
             public void onClick(View view) {
                 if (AnalysisUtils.readLoginStatus(getActivity())) {
                     Intent intent = new Intent(getActivity(), SettingActivity.class);
+                    getActivity().startActivityForResult(intent, 1);
+                } else {
+                    Toast.makeText(getActivity(), "您还未登录，请先登录", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        rl_favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (AnalysisUtils.readLoginStatus(getActivity())) {
+                    Intent intent = new Intent(getActivity(), FavoriteActivity.class);
                     getActivity().startActivityForResult(intent, 1);
                 } else {
                     Toast.makeText(getActivity(), "您还未登录，请先登录", Toast.LENGTH_SHORT).show();

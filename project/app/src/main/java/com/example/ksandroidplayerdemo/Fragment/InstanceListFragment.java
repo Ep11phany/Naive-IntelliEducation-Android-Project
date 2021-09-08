@@ -7,27 +7,37 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.example.ksandroidplayerdemo.EntityActivity;
+import com.example.ksandroidplayerdemo.utils.HttpUtils;
 import com.example.ksandroidplayerdemo.MainActivity;
+import com.example.ksandroidplayerdemo.utils.AnalysisUtils;
 import com.example.ksandroidplayerdemo.R;
 import com.example.ksandroidplayerdemo.bean.Item;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import android.app.Activity.*;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.security.auth.Subject;
 
@@ -37,6 +47,7 @@ public class InstanceListFragment extends Fragment {
     private Recycler adapter;
     public View view;
     public String subject;
+    private MyHandler myHandler;
     public InstanceListFragment(List l,String s) {
         instanceList=l;
         subject=s;
@@ -59,6 +70,8 @@ public class InstanceListFragment extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         instanceView.setLayoutManager(layoutManager);
         instanceView.setAdapter(adapter);
+
+        myHandler = new MyHandler(getActivity());
         return view;
     }
 
@@ -92,12 +105,25 @@ public class InstanceListFragment extends Fragment {
 
                     Activity activity=getActivity();
                     Intent data=new Intent(activity, EntityActivity.class);
-                    //datad.putExtra( ); name , value ;
                     data.putExtra("course", subject);
                     data.putExtra("label", instanceList.get(position).get("label"));
-                    //RESULT_OK为Activity系统常量，状态码为-1
-                    // 表示此页面下的内容操作成功将data返回到上一页面，如果是用back返回过去的则不存在用setResult传递data值
                     activity.setResult(activity.RESULT_OK,data);
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                Message msg = Message.obtain();
+                                HashMap<String ,String> hm=new HashMap<String ,String>();
+                                hm.put("name",AnalysisUtils.readLoginUserName(getActivity().getApplicationContext()));
+                                hm.put("url",instanceList.get(position).get("uri"));//tobe changed
+                                msg.obj=hm;
+                                myHandler.handleMessage(msg);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
                     //销毁登录界面
                     //?activity.finish();
                     //跳转到主界面，登录成功的状态传递到 MainActivity 中
@@ -120,4 +146,15 @@ public class InstanceListFragment extends Fragment {
         }
     }
 
+
+    private class MyHandler extends Handler {
+        WeakReference<FragmentActivity> reference;
+        public MyHandler(FragmentActivity activity) {
+            reference = new WeakReference<>(activity);
+        }
+        public void handleMessage(Message msg) {
+            Map<String,String> mp=(HashMap)msg.obj;
+            String sri= HttpUtils.sendGetRequest(mp,"UTF-8","/api/user/addHistory");
+        }
+    }
 }

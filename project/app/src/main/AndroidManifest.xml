@@ -50,5 +50,7 @@
         <activity android:name=".EntityActivity"></activity>
       <activity android:name=".QuestionActivity"></activity>
       <activity android:name=".ResultActivity"></activity>
+      <activity android:name=".FavoriteActivity"></activity>
+      <activity android:name=".HistoryActivity"></activity>
     </application>
 </manifest>

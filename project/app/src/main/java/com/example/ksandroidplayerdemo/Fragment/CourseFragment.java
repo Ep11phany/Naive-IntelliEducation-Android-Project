@@ -87,15 +87,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         public int getCount() {
             return SubFragments.size();
         }
-
-
-
     }
-
-
-
-
-
 
 
     @Override
@@ -110,22 +102,11 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         SubViewPager.setOffscreenPageLimit(SubFragments.size());
         SubViewPager.setAdapter(new MyFragmentAdapter(getChildFragmentManager()));
         SubViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-
             @Override
             public void onPageSelected(int position) {
                 //position只有当页面真正切换的时候，才会调用这个方法，如果页面index一直没有变，则不会调用改方法
                 radapter.mposition=position;
                 radapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
             }
         });
         radapter = new Recycler1(SubjectList);
@@ -309,7 +290,16 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
                     SubjectList= lst1;
                     toadd_SubjectList=lst2;
                     SubViewPager.setAdapter(new MyFragmentAdapter(getFragmentManager()));
-                    recyclerView.setAdapter(new Recycler1(SubjectList));
+                    radapter=new Recycler1(SubjectList);
+                    recyclerView.setAdapter(radapter);
+                    SubViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                        @Override
+                        public void onPageSelected(int position) {
+                            //position只有当页面真正切换的时候，才会调用这个方法，如果页面index一直没有变，则不会调用改方法
+                            radapter.mposition=position;
+                            radapter.notifyDataSetChanged();
+                        }
+                    });
                     setListener(view);
                     initBottom();
                 }
