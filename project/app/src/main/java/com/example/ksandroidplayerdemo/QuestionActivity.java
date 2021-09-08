@@ -99,17 +99,23 @@ public class QuestionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 question=Question.getText().toString().trim();
-                Intent data=new Intent(activity, ResultActivity.class);
-                //datad.putExtra( ); name , value ;
-                data.putExtra("searchKey",question);
-                data.putExtra("subject",subject);
-                //RESULT_OK为Activity系统常量，状态码为-1
-                // 表示此页面下的内容操作成功将data返回到上一页面，如果是用back返回过去的则不存在用setResult传递data值
-                activity.setResult(RESULT_OK,data);
-                //销毁登录界面
-                activity.finish();
-                //跳转到主界面，登录成功的状态传递到 MainActivity 中
-                activity.startActivity(data);
+                if(!question.equals("")){
+                    Intent data=new Intent(activity, ResultActivity.class);
+                    //datad.putExtra( ); name , value ;
+                    data.putExtra("searchKey",question);
+                    data.putExtra("subject",subject);
+                    //RESULT_OK为Activity系统常量，状态码为-1
+                    // 表示此页面下的内容操作成功将data返回到上一页面，如果是用back返回过去的则不存在用setResult传递data值
+                    activity.setResult(RESULT_OK,data);
+                    //销毁登录界面
+                    activity.finish();
+                    //跳转到主界面，登录成功的状态传递到 MainActivity 中
+                    activity.startActivity(data);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"请输入搜索内容",Toast.LENGTH_LONG);
+                }
+
             }
         });
     }

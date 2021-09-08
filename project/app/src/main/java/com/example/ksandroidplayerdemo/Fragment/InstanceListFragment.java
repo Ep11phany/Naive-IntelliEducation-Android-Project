@@ -5,7 +5,11 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -18,6 +22,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -30,16 +35,20 @@ import com.example.ksandroidplayerdemo.bean.Item;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import android.app.Activity.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.security.auth.Subject;
+import android.widget.LinearLayout.LayoutParams;
 
 public class InstanceListFragment extends Fragment {
     private List<Map<String,String>> instanceList;
@@ -102,32 +111,34 @@ public class InstanceListFragment extends Fragment {
                 public void onClick(View v) {
                     int position = holder.getAdapterPosition();
                     //按钮事件
+                    if(!instanceList.get(position).get("uri").equals("NULL")){
+                        Activity activity=getActivity();
+                        Intent data=new Intent(activity, EntityActivity.class);
+                        data.putExtra("course", subject);
+                        data.putExtra("label", instanceList.get(position).get("label"));
+                        activity.setResult(activity.RESULT_OK,data);
 
-                    Activity activity=getActivity();
-                    Intent data=new Intent(activity, EntityActivity.class);
-                    data.putExtra("course", subject);
-                    data.putExtra("label", instanceList.get(position).get("label"));
-                    activity.setResult(activity.RESULT_OK,data);
-
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try{
-                                Message msg = Message.obtain();
-                                HashMap<String ,String> hm=new HashMap<String ,String>();
-                                hm.put("name",AnalysisUtils.readLoginUserName(getActivity().getApplicationContext()));
-                                hm.put("url",instanceList.get(position).get("uri"));//tobe changed
-                                msg.obj=hm;
-                                myHandler.handleMessage(msg);
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    Message msg = Message.obtain();
+                                    HashMap<String ,String> hm=new HashMap<String ,String>();
+                                    hm.put("name",AnalysisUtils.readLoginUserName(getActivity().getApplicationContext()));
+                                    hm.put("url",instanceList.get(position).get("uri"));//tobe changed
+                                    msg.obj=hm;
+                                    myHandler.handleMessage(msg);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
-                    }).start();
-                    //销毁登录界面
-                    //?activity.finish();
-                    //跳转到主界面，登录成功的状态传递到 MainActivity 中
-                    activity.startActivity(data);
+                        }).start();
+                        //销毁登录界面
+                        //?activity.finish();
+                        //跳转到主界面，登录成功的状态传递到 MainActivity 中
+                        activity.startActivity(data);
+                    }
+
                 }
             });
             return holder;
@@ -136,8 +147,18 @@ public class InstanceListFragment extends Fragment {
         @Override
         public void onBindViewHolder(Recycler.ViewHolder holder, int position) {
             Map<String ,String> map = mInstanceList.get(position);
-            holder.Label.setText(map.get("label"));
             holder.Catagory.setText(map.get("category"));
+            holder.Label.setText(map.get("label"));
+            if(map.get("uri").equals("NULL")) {
+                holder.Label.setVisibility(View.GONE);
+                holder.Catagory.setTextColor(Color.parseColor("#AAAAAA"));
+                holder.Catagory.setTextSize(25);
+            }
+            else{
+                holder.Label.setVisibility(View.VISIBLE);
+                holder.Catagory.setTextColor(Color.parseColor("#000000"));
+                holder.Catagory.setTextSize(15);
+            }
         }
 
         @Override

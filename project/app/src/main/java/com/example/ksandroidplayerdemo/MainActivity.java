@@ -152,7 +152,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         switch (v.getId()){
             case R.id.bottom_bar_course_btn:
                 setSelectStatus(0);
-
                 break;
             case R.id.bottom_bar_exercises_btn:
                 setSelectStatus(1);

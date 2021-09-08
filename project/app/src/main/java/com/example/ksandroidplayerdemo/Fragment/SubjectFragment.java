@@ -101,8 +101,22 @@ public class SubjectFragment extends Fragment {
                     JSONObject jo = new JSONObject(sri);
                     String MSG=jo.get("msg").toString();
                     if(MSG.equals("成功")){
-                        String str= jo.get("data").toString();
                         lst = (List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
+                        Map<String ,String> hm=new HashMap<String ,String>();
+                        hm.put("category","没有更多内容了，以后再来试试吧");
+                        hm.put("label","NULL");
+                        hm.put("uri","NULL");
+                        lst.add(hm);
+                        getChildFragmentManager().beginTransaction().replace(R.id.content,new InstanceListFragment(lst,Subject)).commit();
+                        return;
+                    }
+                    else if(MSG.equals("请求异常")){
+                        lst=new ArrayList<>();
+                        Map<String ,String> hm=new HashMap<String ,String>();
+                        hm.put("category","没有更多内容了，以后再来试试吧");
+                        hm.put("label","NULL");
+                        hm.put("uri","NULL");
+                        lst.add(hm);
                         getChildFragmentManager().beginTransaction().replace(R.id.content,new InstanceListFragment(lst,Subject)).commit();
                         return;
                     }
