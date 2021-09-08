@@ -85,6 +85,7 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                 hm.put("name", label);
                 msg.obj = hm;
                 myHandler.handleMessage(msg);
+
             }
         }).start();
     }
@@ -162,6 +163,8 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         public void handleMessage(Message msg) {
             Map<String,String> mp=(HashMap)msg.obj;
             String sri= HttpUtils.sendGetRequest(mp,"UTF-8","/api/edukg/infoInstance");
+            //发送历史记录信息
+            HttpUtils.sendGetRequest(mp,"UTF-8","/api/edukg/infoInstance");
             if(sri!="Failed"){
                 try {
                     JSONObject jo = new JSONObject(sri);
@@ -174,6 +177,17 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                     }
                 } catch (JSONException e) {
                 }
+            }
+            else{
+                //TODO: add_Sharedpreferance
+
+
+
+
+
+
+
+
             }
         }
     }
