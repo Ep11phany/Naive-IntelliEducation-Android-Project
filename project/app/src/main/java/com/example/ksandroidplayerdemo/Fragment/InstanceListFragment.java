@@ -115,8 +115,8 @@ public class InstanceListFragment extends Fragment {
                             try{
                                 Message msg = Message.obtain();
                                 HashMap<String ,String> hm=new HashMap<String ,String>();
-                                hm.put("username",AnalysisUtils.readLoginUserName(getActivity().getApplicationContext()));
-                                hm.put("name",instanceList.get(position).get("label"));//tobe changed
+                                hm.put("name",AnalysisUtils.readLoginUserName(getActivity().getApplicationContext()));
+                                hm.put("url",instanceList.get(position).get("uri"));//tobe changed
                                 msg.obj=hm;
                                 myHandler.handleMessage(msg);
                             } catch (Exception e) {
