@@ -115,7 +115,10 @@ public class ResultActivity extends AppCompatActivity {
                         return  ((Collator) com).compare(o1.get("label").toString(),o2.get("label").toString());
                     };
                 });
-                getSupportFragmentManager().beginTransaction().replace(R.id.body, new InstanceListFragment(lst, subject)).commit();
+                for(int i=0;i<lst.size();i++){
+                    lst.get(i).put("subject",subject);
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.body, new InstanceListFragment(lst)).commit();
             }
         });
         reverse_sort=findViewById(R.id.reverse_sort);
@@ -128,7 +131,10 @@ public class ResultActivity extends AppCompatActivity {
                         return  ((Collator) com).compare(o2.get("label").toString(),o1.get("label").toString());
                     };
                 });
-                getSupportFragmentManager().beginTransaction().replace(R.id.body, new InstanceListFragment(lst, subject)).commit();
+                for(int i=0;i<lst.size();i++){
+                    lst.get(i).put("subject",subject);
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.body, new InstanceListFragment(lst)).commit();
             }
         });
         title_bar = findViewById(R.id.title_bar);
@@ -153,7 +159,10 @@ public class ResultActivity extends AppCompatActivity {
                     if (MSG.equals("成功")) {
                         String str = jo.get("data").toString();
                         lst = (List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
-                        getSupportFragmentManager().beginTransaction().replace(R.id.body, new InstanceListFragment(lst, subject)).commit();
+                        for(int i=0;i<lst.size();i++){
+                            lst.get(i).put("subject",subject);
+                        }
+                        getSupportFragmentManager().beginTransaction().replace(R.id.body, new InstanceListFragment(lst)).commit();
                         return;
                     }
                 } catch (JSONException e) {

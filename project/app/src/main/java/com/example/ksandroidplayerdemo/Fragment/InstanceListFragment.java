@@ -5,7 +5,11 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -18,8 +22,10 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.example.ksandroidplayerdemo.EntityActivity;
 import com.example.ksandroidplayerdemo.utils.HttpUtils;
@@ -27,30 +33,42 @@ import com.example.ksandroidplayerdemo.MainActivity;
 import com.example.ksandroidplayerdemo.utils.AnalysisUtils;
 import com.example.ksandroidplayerdemo.R;
 import com.example.ksandroidplayerdemo.bean.Item;
+import com.example.ksandroidplayerdemo.utils.TranslationUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import android.app.Activity.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.security.auth.Subject;
+import android.widget.LinearLayout.LayoutParams;
 
 public class InstanceListFragment extends Fragment {
     private List<Map<String,String>> instanceList;
     private RecyclerView instanceView;
     private Recycler adapter;
     public View view;
-    public String subject;
     private MyHandler myHandler;
-    public InstanceListFragment(List l,String s) {
+    public InstanceListFragment(List l) {
         instanceList=l;
-        subject=s;
+    }
+
+
+    private boolean contain(List<Map<String,String>> l,String label,String subject){
+        for(int i=0;i<l.size();i++){
+            if(l.get(i).get("label").equals(label)&&l.get(i).get("subject").equals(subject))
+                return true;
+        }
+        return false;
     }
 
 
@@ -102,32 +120,37 @@ public class InstanceListFragment extends Fragment {
                 public void onClick(View v) {
                     int position = holder.getAdapterPosition();
                     //按钮事件
+                    if(!instanceList.get(position).get("label").equals("NULL")){
+                        Activity activity=getActivity();
+                        Intent data=new Intent(activity, EntityActivity.class);
+                        data.putExtra("course", instanceList.get(position).get("subject"));
+                        data.putExtra("label", instanceList.get(position).get("label"));
+                        activity.setResult(activity.RESULT_OK,data);
 
-                    Activity activity=getActivity();
-                    Intent data=new Intent(activity, EntityActivity.class);
-                    data.putExtra("course", subject);
-                    data.putExtra("label", instanceList.get(position).get("label"));
-                    activity.setResult(activity.RESULT_OK,data);
-
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try{
-                                Message msg = Message.obtain();
-                                HashMap<String ,String> hm=new HashMap<String ,String>();
-                                hm.put("name",AnalysisUtils.readLoginUserName(getActivity().getApplicationContext()));
-                                hm.put("url",instanceList.get(position).get("uri"));//tobe changed
-                                msg.obj=hm;
-                                myHandler.handleMessage(msg);
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    Message msg = Message.obtain();
+                                    HashMap<String ,String> hm=new HashMap<String ,String>();
+                                    hm.put("name",AnalysisUtils.readLoginUserName(getActivity().getApplicationContext()));
+                                    hm.put("instance",instanceList.get(position).get("label"));
+                                    hm.put("subject",instanceList.get(position).get("subject"));
+                                    msg.obj=hm;
+                                    myHandler.handleMessage(msg);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
-                    }).start();
-                    //销毁登录界面
-                    //?activity.finish();
-                    //跳转到主界面，登录成功的状态传递到 MainActivity 中
-                    activity.startActivity(data);
+                        }).start();
+                        holder.Label.setTextColor(Color.parseColor("#AAAAAA"));
+                        holder.Catagory.setTextColor(Color.parseColor("#AAAAAA"));
+                        //销毁登录界面
+                        //?activity.finish();
+                        //跳转到主界面，登录成功的状态传递到 MainActivity 中
+                        activity.startActivity(data);
+                    }
+
                 }
             });
             return holder;
@@ -136,8 +159,31 @@ public class InstanceListFragment extends Fragment {
         @Override
         public void onBindViewHolder(Recycler.ViewHolder holder, int position) {
             Map<String ,String> map = mInstanceList.get(position);
+            holder.Catagory.setText(TranslationUtils.E2C(map.get("category")));
             holder.Label.setText(map.get("label"));
-            holder.Catagory.setText(map.get("category"));
+
+
+            SharedPreferences sp=getActivity().getSharedPreferences("HistoryInfo", MODE_PRIVATE);
+            List<Map<String, String>> lst=(List<Map<String, String>>) JSONArray.parse(sp.getString("History","[]"));
+
+
+            if(map.get("label").equals("NULL")) {
+                holder.Label.setVisibility(View.GONE);
+                holder.Catagory.setTextColor(Color.parseColor("#AAAAAA"));
+                holder.Catagory.setTextSize(25);
+            }
+            else{
+                holder.Label.setVisibility(View.VISIBLE);
+                holder.Catagory.setTextSize(15);
+                if(contain(lst,map.get("label"),map.get("subject"))){
+                    holder.Label.setTextColor(Color.parseColor("#AAAAAA"));
+                    holder.Catagory.setTextColor(Color.parseColor("#AAAAAA"));
+                }
+                else{
+                    holder.Label.setTextColor(Color.parseColor("#000000"));
+                    holder.Catagory.setTextColor(Color.parseColor("#000000"));
+                }
+            }
         }
 
         @Override
@@ -155,6 +201,36 @@ public class InstanceListFragment extends Fragment {
         public void handleMessage(Message msg) {
             Map<String,String> mp=(HashMap)msg.obj;
             String sri= HttpUtils.sendGetRequest(mp,"UTF-8","/api/user/addHistory");
+            Map<String ,String> mp1=new HashMap<>();
+            mp1.put("name",AnalysisUtils.readLoginUserName(getActivity().getApplicationContext()));
+            sri= HttpUtils.sendGetRequest(mp1,"UTF-8","/api/user/showHistory");
+            //发送历史记录信息
+            if(sri!="Failed"){
+                try {
+                    JSONObject jo = new JSONObject(sri);
+                    String MSG=jo.get("msg").toString();
+                    if(MSG.equals("Success!")){
+                        String datastring=jo.get("data").toString();
+                        SharedPreferences sp=getActivity().getSharedPreferences("HistoryInfo", MODE_PRIVATE);
+                        SharedPreferences.Editor editor=sp.edit();
+                        if(!datastring.equals("[]")){
+                            List<Map<String, String>> datalst=(List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
+                            List<Map<String, String>> lst=new ArrayList<>();
+                            for(int i=0;i<datalst.size();i++){
+                                HashMap<String ,String> hm=new HashMap<String ,String>();
+                                hm.put("label",datalst.get(i).get("instance"));
+                                hm.put("category", TranslationUtils.C2E(datalst.get(i).get("subject")));
+                                hm.put("subject",TranslationUtils.C2E(datalst.get(i).get("subject")));
+                                hm.put("uri","NULL");
+                                lst.add(hm);
+                            }
+                            editor.putString("History", JSON.toJSONString(lst));
+                            editor.commit();
+                        }
+                    }
+                } catch (JSONException e) {
+                }
+            }
         }
     }
 }

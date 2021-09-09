@@ -2,9 +2,12 @@ package com.example.ksandroidplayerdemo;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,10 +18,25 @@ import android.widget.Toast;
 import android.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.example.ksandroidplayerdemo.Fragment.CourseFragment;
 import com.example.ksandroidplayerdemo.Fragment.DialogFragment;
 import com.example.ksandroidplayerdemo.Fragment.ExercisesFragment;
+import com.example.ksandroidplayerdemo.Fragment.InstanceListFragment;
 import com.example.ksandroidplayerdemo.Fragment.MyinfoFragment;
+import com.example.ksandroidplayerdemo.utils.AnalysisUtils;
+import com.example.ksandroidplayerdemo.utils.HttpUtils;
+import com.example.ksandroidplayerdemo.utils.TranslationUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener{
@@ -37,16 +55,54 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private RelativeLayout bottom_bar_myinfo_btn;
     private LinearLayout main_bottom_bar;
     private TextView tv_question;
+    private MyHandler myHandler;
+    private MyHandler1 myHandler1;
     protected long exitTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SharedPreferences sp=getSharedPreferences("HistoryInfo", MODE_PRIVATE);
+        SharedPreferences.Editor editor=sp.edit();
+        editor.putString("History", "[]");
         initView();
+        initInfo();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setMain();
     }
+
+    private void initInfo(){
+        myHandler=new MyHandler(this);
+        myHandler1=new MyHandler1(this);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Message msg = Message.obtain();
+                    HashMap<String ,String> hm=new HashMap<String ,String>();
+                    hm.put("name",AnalysisUtils.readLoginUserName(getApplicationContext()));
+                    msg.obj=hm;
+                    myHandler.handleMessage(msg);
+                } catch (Exception e) {
+                }
+            }
+        }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Message msg = Message.obtain();
+                    HashMap<String ,String> hm=new HashMap<String ,String>();
+                    hm.put("name",AnalysisUtils.readLoginUserName(getApplicationContext()));
+                    msg.obj=hm;
+                    myHandler1.handleMessage(msg);
+                } catch (Exception e) {
+                }
+            }
+        }).start();
+    }
+
 
     //给MainActivity加上退出清除登陆状态的方法。
     // 连续点击返回两次则退出，两次点击间隔超过2秒则提示再按一次退出。
@@ -152,7 +208,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         switch (v.getId()){
             case R.id.bottom_bar_course_btn:
                 setSelectStatus(0);
-
                 break;
             case R.id.bottom_bar_exercises_btn:
                 setSelectStatus(1);
@@ -168,4 +223,85 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
         }
     }
+
+
+    private class MyHandler extends Handler {
+        WeakReference<FragmentActivity> reference;
+        public MyHandler(FragmentActivity activity) {
+            reference = new WeakReference<>(activity);
+        }
+        public void handleMessage(Message msg) {
+            Map<String,String> mp=(HashMap)msg.obj;
+            String sri= HttpUtils.sendGetRequest(mp,"UTF-8","/api/user/showHistory");
+            //发送历史记录信息
+            if(sri!="Failed"){
+                try {
+                    JSONObject jo = new JSONObject(sri);
+                    String MSG=jo.get("msg").toString();
+                    if(MSG.equals("Success!")){
+                        String datastring=jo.get("data").toString();
+                        SharedPreferences sp=getSharedPreferences("HistoryInfo", MODE_PRIVATE);
+                        SharedPreferences.Editor editor=sp.edit();
+                        if(!datastring.equals("[]")){
+                            List<Map<String, String>> datalst=(List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
+                            List<Map<String, String>> lst=new ArrayList<>();
+                            for(int i=0;i<datalst.size();i++){
+                                HashMap<String ,String> hm=new HashMap<String ,String>();
+                                hm.put("label",datalst.get(i).get("instance"));
+                                hm.put("category", TranslationUtils.C2E(datalst.get(i).get("subject")));
+                                hm.put("subject",TranslationUtils.C2E(datalst.get(i).get("subject")));
+                                hm.put("uri","NULL");
+                                lst.add(hm);
+                            }
+                            editor.putString("History", JSON.toJSONString(lst));
+                            editor.commit();
+                        }
+                    }
+                } catch (JSONException e) {
+                }
+            }
+        }
+    }
+
+
+    private class MyHandler1 extends Handler {
+        WeakReference<FragmentActivity> reference;
+
+        public MyHandler1(FragmentActivity activity) {
+            reference = new WeakReference<>(activity);
+        }
+
+        public void handleMessage(Message msg) {
+            Map<String, String> mp = (HashMap) msg.obj;
+            String sri = HttpUtils.sendGetRequest(mp, "UTF-8", "/api/user/showFavorite");
+            //发送历史记录信息
+            if (sri != "Failed") {
+                try {
+                    JSONObject jo = new JSONObject(sri);
+                    String MSG = jo.get("msg").toString();
+                    if (MSG.equals("Success!")) {
+                        String datastring = jo.get("data").toString();
+                        SharedPreferences sp = getSharedPreferences("FavoriteInfo", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        if (!datastring.equals("[]")) {
+                            List<Map<String, String>> datalst = (List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
+                            List<Map<String, String>> lst = new ArrayList<>();
+                            for (int i = 0; i < datalst.size(); i++) {
+                                HashMap<String, String> hm = new HashMap<String, String>();
+                                hm.put("label", datalst.get(i).get("instance"));
+                                hm.put("category", TranslationUtils.C2E(datalst.get(i).get("subject")));
+                                hm.put("subject", TranslationUtils.C2E(datalst.get(i).get("subject")));
+                                hm.put("uri", "NULL");
+                                lst.add(hm);
+                            }
+                            editor.putString("Favorite", JSON.toJSONString(lst));
+                            editor.commit();
+                        }
+                    }
+                } catch (JSONException e) {
+                }
+            }
+        }
+    }
+
 }
