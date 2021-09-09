@@ -15,15 +15,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.Fragment;
+
 import androidx.fragment.app.FragmentActivity;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.example.ksandroidplayerdemo.Fragment.CourseFragment;
 import com.example.ksandroidplayerdemo.Fragment.DialogFragment;
-import com.example.ksandroidplayerdemo.Fragment.ExercisesFragment;
-import com.example.ksandroidplayerdemo.Fragment.InstanceListFragment;
 import com.example.ksandroidplayerdemo.Fragment.MyinfoFragment;
 import com.example.ksandroidplayerdemo.utils.AnalysisUtils;
 import com.example.ksandroidplayerdemo.utils.HttpUtils;

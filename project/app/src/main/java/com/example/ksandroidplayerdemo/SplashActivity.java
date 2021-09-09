@@ -23,14 +23,7 @@ public class SplashActivity extends AppCompatActivity {
     }
     private void init() {
         tv_version = findViewById(R.id.tv_version);
-        try {
-            //获取程序包信息
-            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            tv_version.setText("version:" + packageInfo.versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            tv_version.setText("version");
-        }
+        tv_version.setText("欢迎使用");
         //利用timer让此界面延迟3秒后跳转，timer有一个线程，该线程不断执行task
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {

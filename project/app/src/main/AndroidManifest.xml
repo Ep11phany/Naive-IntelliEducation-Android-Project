@@ -46,8 +46,7 @@
         <activity android:name=".FindPwdActivity"></activity>
         <activity android:name=".ModifyPwdActivity"></activity>
         <activity android:name=".ChangeUserInfoActivity"></activity>
-        <activity android:name=".UserInfoActivity"></activity>
-        <activity android:name=".EntityActivity"></activity>
+      <activity android:name=".EntityActivity"></activity>
       <activity android:name=".QuestionActivity"></activity>
       <activity android:name=".ResultActivity"></activity>
       <activity android:name=".FavoriteActivity"></activity>

@@ -10,12 +10,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ksandroidplayerdemo.LoginActivity;
 import com.example.ksandroidplayerdemo.R;
 import com.example.ksandroidplayerdemo.SettingActivity;
-import com.example.ksandroidplayerdemo.UserInfoActivity;
 import com.example.ksandroidplayerdemo.utils.AnalysisUtils;
 import com.example.ksandroidplayerdemo.FavoriteActivity;
 import com.example.ksandroidplayerdemo.HistoryActivity;
@@ -47,23 +45,6 @@ public class MyinfoFragment extends Fragment {
         rl_favorite = (RelativeLayout) view.findViewById(R.id.rl_favorite);
         rl_setting = (RelativeLayout) view.findViewById(R.id.rl_setting);
         setLoginParams(AnalysisUtils.readLoginStatus(getActivity()));
-        ll_head.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (AnalysisUtils.readLoginStatus(getActivity())) {
-                    Intent intent = new Intent(getActivity(), UserInfoActivity.class);
-                    getActivity().startActivity(intent);
-                } else {
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
-                    //startActivity(intent);  若是登录完自动跳转到课程界面，则直接用这个方法即可，这里修改以防后面需要
-                    /**
-                     * 优化修改，注意，这里不是从fragment打开activity，而是从主页活动打开登陆活动
-                     * 若不是，则无法在主页活动直接使用onActivityResult()
-                     * **/
-                    getActivity().startActivityForResult(intent, 1);
-                }
-            }
-        });
         rl_course_history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,10 +74,6 @@ public class MyinfoFragment extends Fragment {
      * 通过登录后留在此页面并且立刻刷新用户名会在MainActivity的onActivityResult中处理
      **/
     private void setLoginParams(boolean isLogin) {
-        if (isLogin) {
-            tv_user_name.setText(AnalysisUtils.readLoginUserName(getActivity()));
-        } else {
-            tv_user_name.setText("点击登录");
-        }
+        tv_user_name.setText(AnalysisUtils.readLoginUserName(getActivity()));
     }
 }

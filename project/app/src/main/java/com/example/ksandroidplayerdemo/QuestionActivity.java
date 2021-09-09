@@ -49,6 +49,7 @@ public class QuestionActivity extends AppCompatActivity {
     private Button query;
     private TextView tv_back;
     private RelativeLayout title_bar;
+    private TextView tv_main_title;
     private String subject="chinese";
     private List<Item> lst = new ArrayList<>();
     private Recycler adapter;
@@ -91,6 +92,8 @@ public class QuestionActivity extends AppCompatActivity {
                 finish();
             }
         });
+        tv_main_title=(TextView)findViewById(R.id.tv_main_title);
+        tv_main_title.setText("搜索");
         title_bar=findViewById(R.id.title_bar);
         title_bar.setBackgroundColor(Color.parseColor("#30B4FF"));
         query=findViewById(R.id.query);
