@@ -23,6 +23,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.example.Sumuhandemo.Fragment.CourseFragment;
 import com.example.Sumuhandemo.Fragment.DialogFragment;
 import com.example.Sumuhandemo.Fragment.MyinfoFragment;
+import com.example.Sumuhandemo.Fragment.ExploreFragment;
 import com.example.Sumuhandemo.utils.AnalysisUtils;
 import com.example.Sumuhandemo.utils.HttpUtils;
 import com.example.Sumuhandemo.utils.TranslationUtils;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener{
@@ -51,6 +53,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private TextView bottom_bar_text_myinfo;
     private ImageView bottom_bar_image_myinfo;
     private RelativeLayout bottom_bar_myinfo_btn;
+    private TextView bottom_bar_text_explore;
+    private ImageView bottom_bar_image_explore;
+    private RelativeLayout bottom_bar_explore_btn;
     private LinearLayout main_bottom_bar;
     private TextView tv_question;
     private MyHandler myHandler;
@@ -145,8 +150,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 bottom_bar_text_course.setTextColor(Color.parseColor("#0097F7"));
                 bottom_bar_text_exercises.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_text_myinfo.setTextColor(Color.parseColor("#666666"));
+                bottom_bar_text_explore.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_image_exercises.setImageResource(R.drawable.main_question_icon);
                 bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon);
+                bottom_bar_image_explore.setImageResource(R.drawable.main_explore_icon);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new CourseFragment()).commit();
                 tv_main_title.setText("课程");
                 break;
@@ -155,8 +162,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 bottom_bar_text_exercises.setTextColor(Color.parseColor("#0097F7"));
                 bottom_bar_text_course.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_text_myinfo.setTextColor(Color.parseColor("#666666"));
+                bottom_bar_text_explore.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_image_course.setImageResource(R.drawable.main_course_icon);
                 bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon);
+                bottom_bar_image_explore.setImageResource(R.drawable.main_explore_icon);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new DialogFragment()).commit();
                 tv_main_title.setText("问答");
                 break;
@@ -165,11 +174,25 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 bottom_bar_text_myinfo.setTextColor(Color.parseColor("#0097F7"));
                 bottom_bar_text_course.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_text_exercises.setTextColor(Color.parseColor("#666666"));
+                bottom_bar_text_explore.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_image_exercises.setImageResource(R.drawable.main_question_icon);
                 bottom_bar_image_course.setImageResource(R.drawable.main_course_icon);
+                bottom_bar_image_explore.setImageResource(R.drawable.main_explore_icon);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new MyinfoFragment()).commit();
                 tv_main_title.setText("我的");
                 break;
+            case 3:
+                bottom_bar_image_explore.setImageResource(R.drawable.main_explore_icon_selected);
+                bottom_bar_text_course.setTextColor(Color.parseColor("#666666"));
+                bottom_bar_text_exercises.setTextColor(Color.parseColor("#666666"));
+                bottom_bar_text_myinfo.setTextColor(Color.parseColor("#666666"));
+                bottom_bar_text_explore.setTextColor(Color.parseColor("#0097F7"));
+                bottom_bar_image_exercises.setImageResource(R.drawable.main_question_icon);
+                bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon);
+                bottom_bar_image_course.setImageResource(R.drawable.main_course_icon);
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new ExploreFragment()).commit();
+                tv_main_title.setText("发现");
+
         }
     }
     private void initView() {
@@ -190,11 +213,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         bottom_bar_text_myinfo = findViewById(R.id.bottom_bar_text_myinfo);
         bottom_bar_image_myinfo = findViewById(R.id.bottom_bar_image_myinfo);
         bottom_bar_myinfo_btn = findViewById(R.id.bottom_bar_myinfo_btn);
+        bottom_bar_text_explore = findViewById(R.id.bottom_bar_text_explore);
+        bottom_bar_image_explore = findViewById(R.id.bottom_bar_image_explore);
+        bottom_bar_explore_btn = findViewById(R.id.bottom_bar_explore_btn);
         main_bottom_bar = findViewById(R.id.main_bottom_bar);
 
         bottom_bar_course_btn.setOnClickListener(this);
         bottom_bar_exercises_btn.setOnClickListener(this);
         bottom_bar_myinfo_btn.setOnClickListener(this);
+        bottom_bar_explore_btn.setOnClickListener(this);
 
         tv_back=findViewById(R.id.tv_back);
         tv_main_title.setText("课程");
@@ -212,6 +239,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.bottom_bar_myinfo_btn:
                 setSelectStatus(2);
+                break;
+            case R.id.bottom_bar_explore_btn:
+                setSelectStatus(3);
                 break;
             case R.id.tv_question:
                 startActivity(new Intent(this, QuestionActivity.class));

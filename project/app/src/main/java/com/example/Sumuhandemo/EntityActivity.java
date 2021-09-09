@@ -76,6 +76,7 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
 
     List<Map<String, String>> propertyList;
     List<Map<String, String>> relationshipList;
+    List<Map<String, String>> questionList;
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -210,7 +211,15 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                 top_bar_text_property.setTextColor(Color.parseColor("#666666"));
                 top_bar_text_relationship.setTextColor(Color.parseColor("#666666"));
                 top_bar_text_question.setTextColor(Color.parseColor("#0097F7"));
-                getSupportFragmentManager().beginTransaction().replace(R.id.entity_body,new QuestionFragment()).commit();
+                new Thread(new Runnable() {
+                    public void run(){
+                        Message msg = Message.obtain();
+                        HashMap<String, String> hm = new HashMap<String, String>();
+                        hm.put("uriName", label);
+                        msg.obj = hm;
+                        myHandler.getQuestions(msg);
+                    }
+                }).start();
                 break;
         }
     }
@@ -247,6 +256,21 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
 
 
 
+            }
+        }
+        public void getQuestions(Message msg) {
+            Map<String,String> mp=(HashMap)msg.obj;
+            String sri= HttpUtils.sendGetRequest(mp,"UTF-8","/api/edukg/questionList");
+            if(sri!="Failed"){
+                try {
+                    JSONObject jo = new JSONObject(sri);
+                    String MSG=jo.get("msg").toString();
+                    if(MSG.equals("成功")){
+                        questionList = (List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
+                        getSupportFragmentManager().beginTransaction().replace(R.id.entity_body,new QuestionFragment(questionList)).commit();
+                    }
+                } catch (JSONException e) {
+                }
             }
         }
     }

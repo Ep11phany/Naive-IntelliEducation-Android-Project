@@ -84,6 +84,33 @@
         </RelativeLayout>
         <RelativeLayout
             android:layout_weight="1"
+            android:id="@+id/bottom_bar_explore_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/bottom_bar_text_explore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="3dp"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="发现"
+                android:textColor="#666666"
+                android:textSize="14sp"/>
+            <ImageView
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:layout_above="@+id/bottom_bar_text_explore"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="3dp"
+                android:id="@+id/bottom_bar_image_explore"
+                android:src="@drawable/main_explore_icon"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_weight="1"
             android:id="@+id/bottom_bar_myinfo_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent">
