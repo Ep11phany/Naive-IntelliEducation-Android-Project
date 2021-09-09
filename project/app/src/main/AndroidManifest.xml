@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ksandroidplayerdemo">
+    package="com.example.Sumuhandemo">
     <!--原为android:theme="@style/AppTheme"-->
     <!--去除ActionBar标题栏-->
     <!--添加应用图标，app_icon-->
@@ -46,8 +46,7 @@
         <activity android:name=".FindPwdActivity"></activity>
         <activity android:name=".ModifyPwdActivity"></activity>
         <activity android:name=".ChangeUserInfoActivity"></activity>
-        <activity android:name=".UserInfoActivity"></activity>
-        <activity android:name=".EntityActivity"></activity>
+      <activity android:name=".EntityActivity"></activity>
       <activity android:name=".QuestionActivity"></activity>
       <activity android:name=".ResultActivity"></activity>
       <activity android:name=".FavoriteActivity"></activity>
