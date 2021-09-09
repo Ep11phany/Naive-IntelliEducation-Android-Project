@@ -67,34 +67,23 @@ public class MyinfoFragment extends Fragment {
         rl_course_history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (AnalysisUtils.readLoginStatus(getActivity())) {
                     Intent intent = new Intent(getActivity(), HistoryActivity.class);
                     getActivity().startActivityForResult(intent, 1);
-                } else {
-                    Toast.makeText(getActivity(), "您还未登录，请先登录", Toast.LENGTH_SHORT).show();
-                }
             }
         });
         rl_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (AnalysisUtils.readLoginStatus(getActivity())) {
                     Intent intent = new Intent(getActivity(), SettingActivity.class);
                     getActivity().startActivityForResult(intent, 1);
-                } else {
-                    Toast.makeText(getActivity(), "您还未登录，请先登录", Toast.LENGTH_SHORT).show();
-                }
+
             }
         });
         rl_favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (AnalysisUtils.readLoginStatus(getActivity())) {
                     Intent intent = new Intent(getActivity(), FavoriteActivity.class);
                     getActivity().startActivityForResult(intent, 1);
-                } else {
-                    Toast.makeText(getActivity(), "您还未登录，请先登录", Toast.LENGTH_SHORT).show();
-                }
             }
         });
     }

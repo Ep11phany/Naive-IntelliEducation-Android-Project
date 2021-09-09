@@ -22,6 +22,7 @@ import com.example.ksandroidplayerdemo.MainActivity;
 import com.example.ksandroidplayerdemo.R;
 import com.example.ksandroidplayerdemo.Fragment.InstanceListFragment;
 import com.example.ksandroidplayerdemo.utils.HttpUtils;
+import com.example.ksandroidplayerdemo.utils.TranslationUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,26 +41,7 @@ public class SubjectFragment extends Fragment {
     private MyHandler myHandler;
     private List<Map<String,String>> lst;
     public SubjectFragment(String name) {
-        if(name.equals("语文")){
-            Subject="chinese";
-        }else if (name.equals("数学")){
-            Subject="math";
-        }else if (name.equals("英语")){
-            Subject="english";
-        }else if (name.equals("物理")){
-            Subject="physics";
-        }else if (name.equals("化学")){
-            Subject="chemistry";
-        }else if (name.equals("生物")){
-            Subject="biology";
-        }else if (name.equals("政治")){
-            Subject="politics";
-        }else if (name.equals("历史")){
-            Subject="history";
-        }else if (name.equals("地理")){
-            Subject="geo";
-        }
-
+        Subject=TranslationUtils.C2E(name);
     }
 
 
@@ -107,7 +89,10 @@ public class SubjectFragment extends Fragment {
                         hm.put("label","NULL");
                         hm.put("uri","NULL");
                         lst.add(hm);
-                        getChildFragmentManager().beginTransaction().replace(R.id.content,new InstanceListFragment(lst,Subject)).commit();
+                        for(int i=0;i<lst.size();i++){
+                            lst.get(i).put("subject",Subject);
+                        }
+                        getChildFragmentManager().beginTransaction().replace(R.id.content,new InstanceListFragment(lst)).commit();
                         return;
                     }
                     else if(MSG.equals("请求异常")){
@@ -117,7 +102,10 @@ public class SubjectFragment extends Fragment {
                         hm.put("label","NULL");
                         hm.put("uri","NULL");
                         lst.add(hm);
-                        getChildFragmentManager().beginTransaction().replace(R.id.content,new InstanceListFragment(lst,Subject)).commit();
+                        for(int i=0;i<lst.size();i++){
+                            lst.get(i).put("subject",Subject);
+                        }
+                        getChildFragmentManager().beginTransaction().replace(R.id.content,new InstanceListFragment(lst)).commit();
                         return;
                     }
                 } catch (JSONException e) {
