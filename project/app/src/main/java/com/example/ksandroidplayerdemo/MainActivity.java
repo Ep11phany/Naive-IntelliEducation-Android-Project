@@ -159,8 +159,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         bottom_bar_image_myinfo = findViewById(R.id.bottom_bar_image_myinfo);
         bottom_bar_myinfo_btn = findViewById(R.id.bottom_bar_myinfo_btn);
         bottom_bar_text_explore = findViewById(R.id.bottom_bar_text_explore);
-        bottom_bar_image_myinfo = findViewById(R.id.bottom_bar_image_explore);
-        bottom_bar_myinfo_btn = findViewById(R.id.bottom_bar_explore_btn);
+        bottom_bar_image_explore = findViewById(R.id.bottom_bar_image_explore);
+        bottom_bar_explore_btn = findViewById(R.id.bottom_bar_explore_btn);
         main_bottom_bar = findViewById(R.id.main_bottom_bar);
 
         bottom_bar_course_btn.setOnClickListener(this);
