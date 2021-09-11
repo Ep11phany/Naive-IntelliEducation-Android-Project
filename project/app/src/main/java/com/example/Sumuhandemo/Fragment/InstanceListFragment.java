@@ -10,12 +10,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,18 +21,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.example.Sumuhandemo.EntityActivity;
 import com.example.Sumuhandemo.utils.HttpUtils;
-import com.example.Sumuhandemo.utils.ImageUtils;
-import com.example.Sumuhandemo.MainActivity;
 import com.example.Sumuhandemo.utils.AnalysisUtils;
 import com.example.Sumuhandemo.R;
-import com.example.Sumuhandemo.bean.Item;
 import com.example.Sumuhandemo.utils.TranslationUtils;
 
 import java.io.InputStream;
@@ -44,20 +36,12 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import android.app.Activity.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import javax.security.auth.Subject;
-import android.widget.LinearLayout.LayoutParams;
 
 public class InstanceListFragment extends Fragment {
     private List<Map<String,String>> instanceList;
