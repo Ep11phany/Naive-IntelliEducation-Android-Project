@@ -91,7 +91,11 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         init();
         myHandler = new MyHandler(this);
         myHandler1 =new MyHandler1(this);
-        startLoading();
+        SharedPreferences sp = getSharedPreferences(course+"_"+label, MODE_PRIVATE);
+        if(sp.contains("property") && sp.contains("content")){
+            propertyList = (List<Map<String, String>>) JSONArray.parse(sp.getString("property", "nothing"));
+            relationshipList = (List<Map<String, String>>) JSONArray.parse(sp.getString("content", "nothing"));
+        }
         new Thread(new Runnable() {
             public void run() {
                 startLoading();
@@ -219,20 +223,31 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                 top_bar_text_relationship.setTextColor(Color.parseColor("#666666"));
                 top_bar_text_question.setTextColor(Color.parseColor("#0097F7"));
                 if(questionList != null) {
+                    startLoading();
                     getSupportFragmentManager().beginTransaction().replace(R.id.entity_body, new QuestionFragment(questionList)).commit();
+                    endLoading();
                 }
                 else {
-                    new Thread(new Runnable() {
-                        public void run() {
-                            startLoading();
-                            Message msg = Message.obtain();
-                            HashMap<String, String> hm = new HashMap<String, String>();
-                            hm.put("uriName", label);
-                            msg.obj = hm;
-                            myHandler.getQuestions(msg);
-                            endLoading();
-                        }
-                    }).start();
+                    SharedPreferences sp = getSharedPreferences(course+"_"+label+"_questions", MODE_PRIVATE);
+                    if(sp.contains("questions")){
+                        startLoading();
+                        questionList = (List<Map<String, String>>) JSONArray.parse(sp.getString("questions", "nothing"));
+                        getSupportFragmentManager().beginTransaction().replace(R.id.entity_body,new QuestionFragment(questionList)).commit();
+                        endLoading();
+                    }
+                    else {
+                        new Thread(new Runnable() {
+                            public void run() {
+                                startLoading();
+                                Message msg = Message.obtain();
+                                HashMap<String, String> hm = new HashMap<String, String>();
+                                hm.put("uriName", label);
+                                msg.obj = hm;
+                                myHandler.getQuestions(msg);
+                                endLoading();
+                            }
+                        }).start();
+                    }
                 }
                 break;
         }
@@ -255,6 +270,11 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                         JSONObject data = jo.getJSONObject("data");
                         propertyList = (List<Map<String, String>>) JSONArray.parse(data.get("property").toString());
                         relationshipList = (List<Map<String, String>>) JSONArray.parse(data.get("content").toString());
+                        SharedPreferences sp = getSharedPreferences(course+"_"+label, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putString("property", data.get("property").toString());
+                        editor.putString("content", data.get("content").toString());
+                        editor.commit();
                         setSelectStatus(0);
                     }
                 } catch (JSONException e) {
@@ -281,6 +301,10 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                     String MSG=jo.get("msg").toString();
                     if(MSG.equals("成功")){
                         questionList = (List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
+                        SharedPreferences sp = getSharedPreferences(course+"_"+label+"_questions", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putString("questions", jo.get("data").toString());
+                        editor.commit();
                         getSupportFragmentManager().beginTransaction().replace(R.id.entity_body,new QuestionFragment(questionList)).commit();
                     }
                 } catch (JSONException e) {
