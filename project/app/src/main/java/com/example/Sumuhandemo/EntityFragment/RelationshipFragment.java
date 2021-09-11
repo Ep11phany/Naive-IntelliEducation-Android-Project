@@ -81,12 +81,12 @@ public class RelationshipFragment extends Fragment {
             if(map.containsKey("subject_label")){
                 String subject = map.get("subject_label");
                 holder.relationshipValue.setText(subject);
-                holder.relationshipType.setText("to");
+                holder.relationshipType.setText("主类型");
             }
             else if(map.containsKey("object_label")){
                 String object = map.get("object_label");
                 holder.relationshipValue.setText(object);
-                holder.relationshipType.setText("from");
+                holder.relationshipType.setText("从类型");
             }
         }
 

@@ -89,4 +89,16 @@
                 android:textSize="20sp" />
         </RelativeLayout>
     </LinearLayout>
+    <View
+        android:id="@+id/loading_block"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.5"
+        android:background="#DDDDDD" />
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/loading_icon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        />
 </RelativeLayout>

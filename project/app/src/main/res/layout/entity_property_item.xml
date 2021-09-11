@@ -8,7 +8,9 @@
         android:id="@+id/property_item"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:layout_marginTop="5dp">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -16,17 +18,23 @@
             android:id="@+id/property_label"
             android:textColor="#000000"
             android:text="123"
-            android:textSize="35dp"
-            android:gravity="left"/>
+            android:textSize="20dp"
+            android:gravity="left"
+            android:padding="5dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/property_value"
             android:layout_weight="1"
-            android:textColor="#000000"
+            android:textColor="#555555"
             android:text="321"
-            android:textSize="25dp"
+            android:textSize="15dp"
             android:gravity="left"
+            android:padding="5dp"
             />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#DDDDDD" />
     </LinearLayout>
 </RelativeLayout>

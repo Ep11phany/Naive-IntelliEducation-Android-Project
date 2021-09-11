@@ -58,6 +58,8 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
     private MyHandler myHandler;
     private MyHandler1 myHandler1;
 
+    private View loading_block;
+    private com.wang.avi.AVLoadingIndicatorView loading_icon;
     private TextView tv_entity_title;//标题
     private TextView tv_back_entity;//返回按钮
     private RelativeLayout title_bar;
@@ -89,14 +91,17 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         init();
         myHandler = new MyHandler(this);
         myHandler1 =new MyHandler1(this);
+        startLoading();
         new Thread(new Runnable() {
             public void run() {
+                startLoading();
                 Message msg = Message.obtain();
                 HashMap<String, String> hm = new HashMap<String, String>();
                 hm.put("course", course);
                 hm.put("name", label);
                 msg.obj = hm;
                 myHandler.handleMessage(msg);
+                endLoading();
             }
         }).start();
     }
@@ -114,6 +119,8 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
     }
 
     private void init(){
+        loading_block = findViewById(R.id.loading_block);
+        loading_icon = findViewById(R.id.loading_icon);
         tv_entity_title = findViewById(R.id.tv_entity_title);
         tv_entity_title.setText(label);
         tv_back_entity = findViewById(R.id.tv_back_entity);
@@ -211,15 +218,22 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                 top_bar_text_property.setTextColor(Color.parseColor("#666666"));
                 top_bar_text_relationship.setTextColor(Color.parseColor("#666666"));
                 top_bar_text_question.setTextColor(Color.parseColor("#0097F7"));
-                new Thread(new Runnable() {
-                    public void run(){
-                        Message msg = Message.obtain();
-                        HashMap<String, String> hm = new HashMap<String, String>();
-                        hm.put("uriName", label);
-                        msg.obj = hm;
-                        myHandler.getQuestions(msg);
-                    }
-                }).start();
+                if(questionList != null) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.entity_body, new QuestionFragment(questionList)).commit();
+                }
+                else {
+                    new Thread(new Runnable() {
+                        public void run() {
+                            startLoading();
+                            Message msg = Message.obtain();
+                            HashMap<String, String> hm = new HashMap<String, String>();
+                            hm.put("uriName", label);
+                            msg.obj = hm;
+                            myHandler.getQuestions(msg);
+                            endLoading();
+                        }
+                    }).start();
+                }
                 break;
         }
     }
@@ -275,6 +289,27 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         }
     }
 
+    private void startLoading(){
+        runOnUiThread(new Runnable() {
+                          @Override
+                          public void run() {
+                              loading_block.setVisibility(View.VISIBLE);
+                              loading_icon.setVisibility(View.VISIBLE);
+                          }
+                      }
+        );
+    }
+
+    private void endLoading(){
+        runOnUiThread(new Runnable() {
+                          @Override
+                          public void run() {
+                              loading_block.setVisibility(View.GONE);
+                              loading_icon.setVisibility(View.GONE);
+                          }
+                      }
+        );
+    }
 
     private class MyHandler1 extends Handler {
         WeakReference<FragmentActivity> reference;
