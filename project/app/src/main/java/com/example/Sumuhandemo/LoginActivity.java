@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.Sumuhandemo.utils.HttpUtils;
+import com.example.Sumuhandemo.utils.AnalysisUtils;
 import com.example.Sumuhandemo.utils.MD5Utils;
 import com.example.Sumuhandemo.bean.User_Info;
 
@@ -52,7 +53,6 @@ public class LoginActivity extends AppCompatActivity{
         tv_question.setVisibility(View.INVISIBLE);
         //从activity_login.xml中获取的
         tv_register=findViewById(R.id.tv_register);
-        tv_find_psw=findViewById(R.id.tv_find_psw);
         tv_hint=findViewById(R.id.tv_hint);
         btn_login=findViewById(R.id.btn_login);
         et_user_name=findViewById(R.id.et_user_name);
@@ -72,15 +72,6 @@ public class LoginActivity extends AppCompatActivity{
                 //为了跳转到注册界面，并实现注册功能
                 Intent intent=new Intent(LoginActivity.this,RegisterActivity.class);
                 startActivityForResult(intent, 1);
-            }
-        });
-        //找回密码控件的点击事件
-        tv_find_psw.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //跳转到找回密码界面（此页面暂未创建）
-                Intent intent = new Intent(LoginActivity.this, FindPwdActivity.class);
-                startActivity(intent);
             }
         });
         //登录按钮的点击事件
@@ -118,19 +109,6 @@ public class LoginActivity extends AppCompatActivity{
         });
     }
 
-    /**
-     *保存登录状态和登录用户名到SharedPreferences中
-     */
-    private void saveLoginStatus(boolean status,String userName){
-        //saveLoginStatus(true, userName);
-        SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
-        //获取编辑器
-        SharedPreferences.Editor editor=sp.edit();
-        //存入登录状态时的用户名
-        editor.putString("loginUserName", userName);
-        //提交修改
-        editor.commit();
-    }
     /**
      * 注册成功的数据返回至此
      * @param requestCode 请求码
@@ -177,7 +155,7 @@ public class LoginActivity extends AppCompatActivity{
                     String MSG=jo.get("msg").toString();
                     if(MSG.equals("Success!")){
                         //保存登录状态，在界面保存登录的用户名 定义个方法 saveLoginStatus boolean 状态 , userName 用户名;
-                        activity.saveLoginStatus(true, ui.Username);
+                        AnalysisUtils.setLoginStatus(activity.getApplicationContext(), ui.Username);
                         //登录成功后关闭此页面进入主页
                         Intent data=new Intent(activity, MainActivity.class);
                         //datad.putExtra( ); name , value ;

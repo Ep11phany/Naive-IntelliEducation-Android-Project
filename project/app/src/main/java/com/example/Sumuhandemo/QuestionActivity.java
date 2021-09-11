@@ -89,6 +89,9 @@ public class QuestionActivity extends AppCompatActivity {
         tv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent data=new Intent();
+                data.putExtra("SelectedStatus",1);
+                setResult(RESULT_OK,data);
                 finish();
             }
         });

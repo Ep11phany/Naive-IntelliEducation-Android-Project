@@ -132,21 +132,37 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data!=null){
-            setSelectStatus(0);
-        }
-        if (requestCode == 000) {
-            setSelectStatus(1);
+            if (!AnalysisUtils.readLoginStatus(getApplicationContext())){
+                Intent Data=new Intent(this.getApplicationContext(), LoginActivity.class);
+                //RESULT_OK为Activity系统常量，状态码为-1
+                // 表示此页面下的内容操作成功将data返回到上一页面，如果是用back返回过去的则不存在用setResult传递data值
+                setResult(RESULT_OK,Data);
+                //销毁登录界面
+                startActivity(Data);
+                finish();
+                //跳转到主界面，登录成功的状态传递到 MainActivity 中
+            }
+            else{
+                switch (data.getIntExtra("SelectedStatus",0)){
+                    case 0:
+                        setSelectStatus(0);
+                        break;
+                    case 1:
+                        setSelectStatus(1);
+                        break;
+                    case 2:
+                        setSelectStatus(2);
+                        break;
+                }
+            }
         }
     }
 
     private void setSelectStatus(int index) {
         switch (index){
             case 0:
-                /*for(int i=0;i<getSupportFragmentManager().getFragments().size();i++){
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().getFragments().get(i)).commit();
-                }*/
                 //清除所有页面以重新渲染
-                bottom_bar_image_course.setImageResource(R.drawable.main_course_icon_selected);
+                bottom_bar_image_course.setImageResource(R.drawable.main_icon_selected);
                 bottom_bar_text_course.setTextColor(Color.parseColor("#0097F7"));
                 bottom_bar_text_exercises.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_text_myinfo.setTextColor(Color.parseColor("#666666"));
@@ -155,7 +171,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon);
                 bottom_bar_image_explore.setImageResource(R.drawable.main_explore_icon);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new CourseFragment()).commit();
-                tv_main_title.setText("课程");
+                tv_main_title.setText("首页");
+                tv_question.setVisibility(View.VISIBLE);
                 break;
             case 1:
                 bottom_bar_image_exercises.setImageResource(R.drawable.main_question_icon_selected);
@@ -163,11 +180,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 bottom_bar_text_course.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_text_myinfo.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_text_explore.setTextColor(Color.parseColor("#666666"));
-                bottom_bar_image_course.setImageResource(R.drawable.main_course_icon);
+                bottom_bar_image_course.setImageResource(R.drawable.main_icon);
                 bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon);
                 bottom_bar_image_explore.setImageResource(R.drawable.main_explore_icon);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new DialogFragment()).commit();
                 tv_main_title.setText("问答");
+                tv_question.setVisibility(View.INVISIBLE);
                 break;
             case 2:
                 bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon_selected);
@@ -176,10 +194,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 bottom_bar_text_exercises.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_text_explore.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_image_exercises.setImageResource(R.drawable.main_question_icon);
-                bottom_bar_image_course.setImageResource(R.drawable.main_course_icon);
+                bottom_bar_image_course.setImageResource(R.drawable.main_icon);
                 bottom_bar_image_explore.setImageResource(R.drawable.main_explore_icon);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new MyinfoFragment()).commit();
                 tv_main_title.setText("我的");
+                tv_question.setVisibility(View.INVISIBLE);
                 break;
             case 3:
                 bottom_bar_image_explore.setImageResource(R.drawable.main_explore_icon_selected);
@@ -189,10 +208,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 bottom_bar_text_explore.setTextColor(Color.parseColor("#0097F7"));
                 bottom_bar_image_exercises.setImageResource(R.drawable.main_question_icon);
                 bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon);
-                bottom_bar_image_course.setImageResource(R.drawable.main_course_icon);
+                bottom_bar_image_course.setImageResource(R.drawable.main_icon);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new ExploreFragment()).commit();
                 tv_main_title.setText("发现");
-
+                tv_question.setVisibility(View.INVISIBLE);
         }
     }
     private void initView() {
@@ -224,7 +243,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         bottom_bar_explore_btn.setOnClickListener(this);
 
         tv_back=findViewById(R.id.tv_back);
-        tv_main_title.setText("课程");
+        tv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        tv_main_title.setText("首页");
         title_bar.setBackgroundColor(Color.parseColor("#30B4FF"));
     }
 
@@ -306,8 +331,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             if (sri != "Failed") {
                 try {
                     JSONObject jo = new JSONObject(sri);
-                    String MSG = jo.get("msg").toString();
-                    if (MSG.equals("Success!")) {
+                    String code=jo.get("code").toString();
+                    if(code.equals("200")){
                         String datastring = jo.get("data").toString();
                         SharedPreferences sp = getSharedPreferences("FavoriteInfo", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();

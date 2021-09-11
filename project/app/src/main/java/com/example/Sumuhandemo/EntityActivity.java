@@ -1,5 +1,6 @@
 package com.example.Sumuhandemo;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -10,9 +11,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -36,6 +39,14 @@ import com.example.Sumuhandemo.utils.HttpUtils;
 import com.example.Sumuhandemo.utils.AnalysisUtils;
 import com.example.Sumuhandemo.utils.MD5Utils;
 import com.example.Sumuhandemo.bean.User_Info;
+import com.sina.weibo.sdk.api.TextObject;
+import com.sina.weibo.sdk.api.WebpageObject;
+import com.sina.weibo.sdk.api.WeiboMultiMessage;
+import com.sina.weibo.sdk.auth.AuthInfo;
+import com.sina.weibo.sdk.common.UiError;
+import com.sina.weibo.sdk.openapi.IWBAPI;
+import com.sina.weibo.sdk.openapi.WBAPIFactory;
+import com.sina.weibo.sdk.share.WbShareCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,7 +64,7 @@ import com.example.Sumuhandemo.utils.TranslationUtils;
 import javax.security.auth.Subject;
 
 
-public class EntityActivity extends FragmentActivity implements View.OnClickListener{
+public class EntityActivity extends FragmentActivity implements View.OnClickListener, WbShareCallback {
 
     private MyHandler myHandler;
     private MyHandler1 myHandler1;
@@ -72,6 +83,12 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
     private RelativeLayout top_bar_question_btn;
     private LinearLayout entity_top_bar;
     private ImageView favorite;
+    private ImageView share;
+    private ImageView qq;
+    private ImageView qqspace;
+    private ImageView wechat;
+    private ImageView friends;
+    private ImageView weibo;
     private boolean isFavorite=false;
     String course;
     String label;
@@ -79,6 +96,7 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
     List<Map<String, String>> propertyList;
     List<Map<String, String>> relationshipList;
     List<Map<String, String>> questionList;
+    private IWBAPI mWeiboAPI;
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -91,7 +109,12 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         init();
         myHandler = new MyHandler(this);
         myHandler1 =new MyHandler1(this);
-        startLoading();
+        // init weibo
+        /*AuthInfo authInfo = new AuthInfo(this, "3464419790", "https://api.weibo.com/oauth2/default.html", "abc123");
+        mWeiboAPI = WBAPIFactory.createWBAPI(this);
+        mWeiboAPI.registerApp(this, authInfo);
+        mWeiboAPI.setLoggerEnable(true);
+        startLoading();*/
         new Thread(new Runnable() {
             public void run() {
                 startLoading();
@@ -147,7 +170,6 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
             public void onClick(View v) {
                 if(isFavorite){
                     favorite.setBackground(unfavor);
-
                 }
                 else{
                     favorite.setBackground(favor);
@@ -170,6 +192,17 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                 }).start();;
             }
         });
+
+        share=findViewById(R.id.share);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBottomDialog();
+            }
+        });
+
+
+
         entity_body = findViewById(R.id.entity_body);
         top_bar_text_property = findViewById(R.id.top_bar_text_property);
         top_bar_property_btn = findViewById(R.id.top_bar_property_btn);
@@ -185,6 +218,71 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         //tv_main_title.setText("课程");
         title_bar.setBackgroundColor(Color.parseColor("#30B4FF"));
     }
+
+
+
+    private void showBottomDialog() {
+        //1、使用Dialog、设置style
+        final Dialog dialog = new Dialog(this, R.style.DialogTheme);
+        //2、设置布局
+        View view = View.inflate(this, R.layout.share, null);
+        dialog.setContentView(view);
+        Window window = dialog.getWindow();
+        //设置弹出位置
+        window.setGravity(Gravity.BOTTOM);
+        //设置弹出动画
+        window.setWindowAnimations(R.style.main_menu_animStyle);
+        //设置对话框大小
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        qq = (ImageView) view.findViewById(R.id.qq);
+        qqspace = (ImageView) view.findViewById(R.id.qqspace);
+        wechat = (ImageView) view.findViewById(R.id.wechat);
+        friends = (ImageView) view.findViewById(R.id.friends);
+        weibo = (ImageView) view.findViewById(R.id.weibo);
+        weibo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                share("快来看看我学到的新知识吧！", label,label );
+            }
+        });
+        dialog.show();
+        dialog.findViewById(R.id.tv_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+    }
+    public void share(String wbContent, String title, String content) {
+        WeiboMultiMessage msg = new WeiboMultiMessage();
+        TextObject Content = new TextObject(); // 正文
+        Content.text = wbContent;
+        msg.textObject = Content;
+        WebpageObject wobj = new WebpageObject();
+        wobj.title = title; // 下方框子标题
+        wobj.description = content;
+        wobj.actionUrl = ""; // 下方框子内容
+        msg.mediaObject = wobj;
+        mWeiboAPI.shareMessage(msg, false);
+    }
+
+    @Override
+    public void onComplete() {
+        Toast.makeText(this, "分享成功", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onError(UiError uiError) {
+        Toast.makeText(this, "分享失败", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onCancel() {
+        Toast.makeText(this, "分享取消", Toast.LENGTH_LONG).show();
+    }
+
+
 
     public void onClick(View v) {
         switch (v.getId()){
@@ -278,8 +376,8 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
             if(sri!="Failed"){
                 try {
                     JSONObject jo = new JSONObject(sri);
-                    String MSG=jo.get("msg").toString();
-                    if(MSG.equals("成功")){
+                    String code=jo.get("code").toString();
+                    if(code.equals("200")){
                         questionList = (List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
                         getSupportFragmentManager().beginTransaction().replace(R.id.entity_body,new QuestionFragment(questionList)).commit();
                     }
@@ -333,8 +431,8 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
             if (sri != "Failed") {
                 try {
                     JSONObject jo = new JSONObject(sri);
-                    String MSG = jo.get("msg").toString();
-                    if (MSG.equals("Success!")) {
+                    String code=jo.get("code").toString();
+                    if(code.equals("200")){
                         String datastring = jo.get("data").toString();
                         SharedPreferences sp = getSharedPreferences("FavoriteInfo", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
