@@ -146,7 +146,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().getFragments().get(i)).commit();
                 }*/
                 //清除所有页面以重新渲染
-                bottom_bar_image_course.setImageResource(R.drawable.main_course_icon_selected);
+                bottom_bar_image_course.setImageResource(R.drawable.main_icon_selected);
                 bottom_bar_text_course.setTextColor(Color.parseColor("#0097F7"));
                 bottom_bar_text_exercises.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_text_myinfo.setTextColor(Color.parseColor("#666666"));
@@ -155,7 +155,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon);
                 bottom_bar_image_explore.setImageResource(R.drawable.main_explore_icon);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new CourseFragment()).commit();
-                tv_main_title.setText("课程");
+                tv_main_title.setText("首页");
+                tv_question.setVisibility(View.VISIBLE);
                 break;
             case 1:
                 bottom_bar_image_exercises.setImageResource(R.drawable.main_question_icon_selected);
@@ -163,11 +164,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 bottom_bar_text_course.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_text_myinfo.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_text_explore.setTextColor(Color.parseColor("#666666"));
-                bottom_bar_image_course.setImageResource(R.drawable.main_course_icon);
+                bottom_bar_image_course.setImageResource(R.drawable.main_icon);
                 bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon);
                 bottom_bar_image_explore.setImageResource(R.drawable.main_explore_icon);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new DialogFragment()).commit();
                 tv_main_title.setText("问答");
+                tv_question.setVisibility(View.INVISIBLE);
                 break;
             case 2:
                 bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon_selected);
@@ -176,10 +178,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 bottom_bar_text_exercises.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_text_explore.setTextColor(Color.parseColor("#666666"));
                 bottom_bar_image_exercises.setImageResource(R.drawable.main_question_icon);
-                bottom_bar_image_course.setImageResource(R.drawable.main_course_icon);
+                bottom_bar_image_course.setImageResource(R.drawable.main_icon);
                 bottom_bar_image_explore.setImageResource(R.drawable.main_explore_icon);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new MyinfoFragment()).commit();
                 tv_main_title.setText("我的");
+                tv_question.setVisibility(View.INVISIBLE);
                 break;
             case 3:
                 bottom_bar_image_explore.setImageResource(R.drawable.main_explore_icon_selected);
@@ -189,10 +192,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 bottom_bar_text_explore.setTextColor(Color.parseColor("#0097F7"));
                 bottom_bar_image_exercises.setImageResource(R.drawable.main_question_icon);
                 bottom_bar_image_myinfo.setImageResource(R.drawable.main_my_icon);
-                bottom_bar_image_course.setImageResource(R.drawable.main_course_icon);
+                bottom_bar_image_course.setImageResource(R.drawable.main_icon);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_body,new ExploreFragment()).commit();
                 tv_main_title.setText("发现");
-
+                tv_question.setVisibility(View.INVISIBLE);
         }
     }
     private void initView() {
@@ -224,7 +227,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         bottom_bar_explore_btn.setOnClickListener(this);
 
         tv_back=findViewById(R.id.tv_back);
-        tv_main_title.setText("课程");
+        tv_main_title.setText("首页");
         title_bar.setBackgroundColor(Color.parseColor("#30B4FF"));
     }
 

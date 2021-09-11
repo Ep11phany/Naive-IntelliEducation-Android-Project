@@ -27,6 +27,7 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,9 +111,9 @@ public class HistoryActivity extends AppCompatActivity {
                             }
                             editor.putString("History", JSON.toJSONString(lst));
                             editor.commit();
+                            Collections.reverse(lst);
                             getSupportFragmentManager().beginTransaction().replace(R.id.content,new InstanceListFragment(lst)).commit();
                         }
-
                     }
                 } catch (JSONException e) {
                 }

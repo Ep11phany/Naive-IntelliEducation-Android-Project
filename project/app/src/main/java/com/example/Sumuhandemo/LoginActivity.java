@@ -52,7 +52,6 @@ public class LoginActivity extends AppCompatActivity{
         tv_question.setVisibility(View.INVISIBLE);
         //从activity_login.xml中获取的
         tv_register=findViewById(R.id.tv_register);
-        tv_find_psw=findViewById(R.id.tv_find_psw);
         tv_hint=findViewById(R.id.tv_hint);
         btn_login=findViewById(R.id.btn_login);
         et_user_name=findViewById(R.id.et_user_name);
@@ -72,15 +71,6 @@ public class LoginActivity extends AppCompatActivity{
                 //为了跳转到注册界面，并实现注册功能
                 Intent intent=new Intent(LoginActivity.this,RegisterActivity.class);
                 startActivityForResult(intent, 1);
-            }
-        });
-        //找回密码控件的点击事件
-        tv_find_psw.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //跳转到找回密码界面（此页面暂未创建）
-                Intent intent = new Intent(LoginActivity.this, FindPwdActivity.class);
-                startActivity(intent);
             }
         });
         //登录按钮的点击事件
