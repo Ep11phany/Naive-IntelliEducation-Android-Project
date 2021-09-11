@@ -29,10 +29,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.example.Sumuhandemo.EntityActivity;
+import com.example.Sumuhandemo.LinkActivity;
 import com.example.Sumuhandemo.utils.HttpUtils;
 import com.example.Sumuhandemo.MainActivity;
 import com.example.Sumuhandemo.utils.AnalysisUtils;
@@ -53,45 +55,14 @@ import org.json.JSONObject;
 import javax.security.auth.Subject;
 
 public class ExploreFragment extends Fragment {
-    private RecyclerView recyclerView;
+
     private View view;
-    private String searchText;
-    private EditText linkInput;
-    private Button linkBtn;
-    private TextView linkOutput;
-    private MyHandler myHandler;
-    private List<Item> subjectList;
-    private ExploreFragment.Recycler1 radapter;
-    private String subject = "chinese";
-    private List<Map> response;
-
-    class MyClickableSpan extends ClickableSpan {
-
-        String keyword;
-
-        MyClickableSpan(String keyword) {
-            super();
-            this.keyword = keyword;
-        }
-
-        @Override
-        public void onClick(@NonNull View view) {
-            Activity activity = getActivity();
-            Intent data=new Intent(getActivity(), EntityActivity.class);
-            data.putExtra("course", subject);
-            data.putExtra("label", keyword);
-            startActivity(data);
-        }
-        public void updateDrawState(TextPaint ds){
-            ds.setColor(Color.BLUE);
-            ds.setUnderlineText(true);
-        }
-    }
+    private RelativeLayout exploreLink;
+    private RelativeLayout exploreQuestionRecommend;
 
     public ExploreFragment() {
 
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,58 +72,18 @@ public class ExploreFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_explore, container, false);
-        subjectList = new ArrayList<Item>();
-        subjectList.add(new Item("语文"));
-        subjectList.add(new Item("数学"));
-        subjectList.add(new Item("英语"));
-        subjectList.add(new Item("物理"));
-        subjectList.add(new Item("化学"));
-        subjectList.add(new Item("生物"));
-        subjectList.add(new Item("政治"));
-        subjectList.add(new Item("历史"));
-        subjectList.add(new Item("地理"));
-        recyclerView = view.findViewById(R.id.subjects);
-        radapter = new ExploreFragment.Recycler1(subjectList);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(radapter);
-        linkInput = view.findViewById(R.id.link_input);
-        linkOutput = view.findViewById(R.id.link_output);
-        linkBtn = view.findViewById(R.id.link_btn);
-        myHandler = new MyHandler(getActivity());
-        linkBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchText = linkInput.getText().toString().trim();
-                if(!searchText.equals("")){
-                    //linkInput.setText("");
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
-                    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Message msg = Message.obtain();
-                                HashMap<String, String> hm = new HashMap<String, String>();
-                                hm.put("course", subject);
-                                hm.put("context", searchText);
-                                String sri = HttpUtils.sendPostRequest(hm, "UTF-8", "/api/edukg/linkInstance");
-                                msg.obj = sri;
-                                myHandler.sendMessage(msg);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-                }
+        exploreLink = view.findViewById(R.id.explore_link);
+        exploreQuestionRecommend = view.findViewById(R.id.explore_question_recommend);
+        exploreLink.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view){
+                Intent intent = new Intent(getActivity(), LinkActivity.class);
+                startActivity(intent);
             }
         });
         return view;
     }
-
+  
     public class Recycler1 extends RecyclerView.Adapter<ExploreFragment.Recycler1.ViewHolder> {
 
         private List<Item> mItemList;
