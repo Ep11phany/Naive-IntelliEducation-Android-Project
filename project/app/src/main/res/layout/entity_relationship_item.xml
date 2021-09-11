@@ -9,13 +9,13 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#EEEEEE"
+        android:background="#FFFFFF"
         android:layout_marginTop="5dp">
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
+            android:padding="5dp"
             android:layout_height="wrap_content"
-            android:background="#EEEEEE"
             android:layout_marginTop="5dp">
         <TextView
             android:layout_width="match_parent"
@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:id="@+id/relationship_type"
+
             android:textColor="#555555"
             android:text="123"
             android:textSize="15dp"
@@ -42,9 +43,14 @@
             android:id="@+id/relationship_value"
             android:layout_weight="1"
             android:textColor="#555555"
+            android:padding="5dp"
             android:text="321"
             android:textSize="15dp"
             android:gravity="left"
             />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#DDDDDD" />
     </LinearLayout>
 </RelativeLayout>
