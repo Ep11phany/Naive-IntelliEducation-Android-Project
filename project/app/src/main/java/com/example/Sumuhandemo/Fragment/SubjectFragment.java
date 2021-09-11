@@ -43,7 +43,8 @@ public class SubjectFragment extends Fragment {
     public SubjectFragment(String name) {
         Subject=TranslationUtils.C2E(name);
     }
-
+    public SubjectFragment(){
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

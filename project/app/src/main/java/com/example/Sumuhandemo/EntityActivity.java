@@ -1,5 +1,6 @@
 package com.example.Sumuhandemo;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -10,9 +11,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -72,6 +75,12 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
     private RelativeLayout top_bar_question_btn;
     private LinearLayout entity_top_bar;
     private ImageView favorite;
+    private ImageView share;
+    private ImageView qq;
+    private ImageView qqspace;
+    private ImageView wechat;
+    private ImageView friends;
+    private ImageView weibo;
     private boolean isFavorite=false;
     String course;
     String label;
@@ -170,6 +179,17 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                 }).start();;
             }
         });
+
+        share=findViewById(R.id.share);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBottomDialog();
+            }
+        });
+
+
+
         entity_body = findViewById(R.id.entity_body);
         top_bar_text_property = findViewById(R.id.top_bar_text_property);
         top_bar_property_btn = findViewById(R.id.top_bar_property_btn);
@@ -185,6 +205,37 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         //tv_main_title.setText("课程");
         title_bar.setBackgroundColor(Color.parseColor("#30B4FF"));
     }
+
+
+
+    private void showBottomDialog() {
+        //1、使用Dialog、设置style
+        final Dialog dialog = new Dialog(this, R.style.DialogTheme);
+        //2、设置布局
+        View view = View.inflate(this, R.layout.share, null);
+        dialog.setContentView(view);
+        Window window = dialog.getWindow();
+        //设置弹出位置
+        window.setGravity(Gravity.BOTTOM);
+        //设置弹出动画
+        window.setWindowAnimations(R.style.main_menu_animStyle);
+        //设置对话框大小
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        qq = (ImageView) view.findViewById(R.id.qq);
+        qqspace = (ImageView) view.findViewById(R.id.qqspace);
+        wechat = (ImageView) view.findViewById(R.id.wechat);
+        friends = (ImageView) view.findViewById(R.id.friends);
+        weibo = (ImageView) view.findViewById(R.id.weibo);
+        dialog.show();
+        dialog.findViewById(R.id.tv_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+    }
+
 
     public void onClick(View v) {
         switch (v.getId()){
