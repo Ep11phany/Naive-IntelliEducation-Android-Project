@@ -95,6 +95,7 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         if(sp.contains("property") && sp.contains("content")){
             propertyList = (List<Map<String, String>>) JSONArray.parse(sp.getString("property", "nothing"));
             relationshipList = (List<Map<String, String>>) JSONArray.parse(sp.getString("content", "nothing"));
+            setSelectStatus(0);
         }
         new Thread(new Runnable() {
             public void run() {

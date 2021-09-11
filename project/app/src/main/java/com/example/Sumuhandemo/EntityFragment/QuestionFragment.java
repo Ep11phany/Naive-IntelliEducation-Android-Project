@@ -1,6 +1,7 @@
 package com.example.Sumuhandemo.EntityFragment;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.Sumuhandemo.ExamActivity;
 import com.example.Sumuhandemo.bean.Item;
 
 import com.example.Sumuhandemo.R;
@@ -76,6 +78,15 @@ public class QuestionFragment extends Fragment {
             holder.questionBody.setText(body);
             String answer = qList.get(position).get("qAnswer");
             holder.questionAnswer.setText(answer);
+            holder.questionBody.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), ExamActivity.class);
+                    intent.putExtra("qBody", body);
+                    intent.putExtra("qAnswer", answer);
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override
