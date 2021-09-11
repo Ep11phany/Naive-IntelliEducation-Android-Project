@@ -39,6 +39,14 @@ import com.example.Sumuhandemo.utils.HttpUtils;
 import com.example.Sumuhandemo.utils.AnalysisUtils;
 import com.example.Sumuhandemo.utils.MD5Utils;
 import com.example.Sumuhandemo.bean.User_Info;
+import com.sina.weibo.sdk.api.TextObject;
+import com.sina.weibo.sdk.api.WebpageObject;
+import com.sina.weibo.sdk.api.WeiboMultiMessage;
+import com.sina.weibo.sdk.auth.AuthInfo;
+import com.sina.weibo.sdk.common.UiError;
+import com.sina.weibo.sdk.openapi.IWBAPI;
+import com.sina.weibo.sdk.openapi.WBAPIFactory;
+import com.sina.weibo.sdk.share.WbShareCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,7 +64,7 @@ import com.example.Sumuhandemo.utils.TranslationUtils;
 import javax.security.auth.Subject;
 
 
-public class EntityActivity extends FragmentActivity implements View.OnClickListener{
+public class EntityActivity extends FragmentActivity implements View.OnClickListener, WbShareCallback {
 
     private MyHandler myHandler;
     private MyHandler1 myHandler1;
@@ -88,6 +96,7 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
     List<Map<String, String>> propertyList;
     List<Map<String, String>> relationshipList;
     List<Map<String, String>> questionList;
+    private IWBAPI mWeiboAPI;
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -100,6 +109,11 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         init();
         myHandler = new MyHandler(this);
         myHandler1 =new MyHandler1(this);
+        // init weibo
+        AuthInfo authInfo = new AuthInfo(this, "3464419790", "https://api.weibo.com/oauth2/default.html", "abc123");
+        mWeiboAPI = WBAPIFactory.createWBAPI(this);
+        mWeiboAPI.registerApp(this, authInfo);
+        mWeiboAPI.setLoggerEnable(true);
         startLoading();
         new Thread(new Runnable() {
             public void run() {
@@ -226,6 +240,12 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         wechat = (ImageView) view.findViewById(R.id.wechat);
         friends = (ImageView) view.findViewById(R.id.friends);
         weibo = (ImageView) view.findViewById(R.id.weibo);
+        weibo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                share("快来看看我学到的新知识吧！", label,label );
+            }
+        });
         dialog.show();
         dialog.findViewById(R.id.tv_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -235,6 +255,34 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         });
 
     }
+    public void share(String wbContent, String title, String content) {
+        WeiboMultiMessage msg = new WeiboMultiMessage();
+        TextObject Content = new TextObject(); // 正文
+        Content.text = wbContent;
+        msg.textObject = Content;
+        WebpageObject wobj = new WebpageObject();
+        wobj.title = title; // 下方框子标题
+        wobj.description = content;
+        wobj.actionUrl = ""; // 下方框子内容
+        msg.mediaObject = wobj;
+        mWeiboAPI.shareMessage(msg, false);
+    }
+
+    @Override
+    public void onComplete() {
+        Toast.makeText(this, "分享成功", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onError(UiError uiError) {
+        Toast.makeText(this, "分享失败", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onCancel() {
+        Toast.makeText(this, "分享取消", Toast.LENGTH_LONG).show();
+    }
+
 
 
     public void onClick(View v) {
