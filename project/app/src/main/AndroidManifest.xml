@@ -45,11 +45,11 @@
         <activity android:name=".SettingActivity"></activity>
         <activity android:name=".FindPwdActivity"></activity>
         <activity android:name=".ModifyPwdActivity"></activity>
-        <activity android:name=".ChangeUserInfoActivity"></activity>
       <activity android:name=".EntityActivity"></activity>
       <activity android:name=".QuestionActivity"></activity>
       <activity android:name=".ResultActivity"></activity>
       <activity android:name=".FavoriteActivity"></activity>
       <activity android:name=".HistoryActivity"></activity>
+      <activity android:name=".LinkActivity"></activity>
     </application>
 </manifest>

@@ -29,10 +29,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.example.Sumuhandemo.EntityActivity;
+import com.example.Sumuhandemo.LinkActivity;
 import com.example.Sumuhandemo.utils.HttpUtils;
 import com.example.Sumuhandemo.MainActivity;
 import com.example.Sumuhandemo.utils.AnalysisUtils;
@@ -53,45 +55,14 @@ import org.json.JSONObject;
 import javax.security.auth.Subject;
 
 public class ExploreFragment extends Fragment {
-    private RecyclerView recyclerView;
+
     private View view;
-    private String searchText;
-    private EditText linkInput;
-    private Button linkBtn;
-    private TextView linkOutput;
-    private MyHandler myHandler;
-    private List<Item> subjectList;
-    private ExploreFragment.Recycler1 radapter;
-    private String subject = "chinese";
-    private List<Map> response;
-
-    class MyClickableSpan extends ClickableSpan {
-
-        String keyword;
-
-        MyClickableSpan(String keyword) {
-            super();
-            this.keyword = keyword;
-        }
-
-        @Override
-        public void onClick(@NonNull View view) {
-            Activity activity = getActivity();
-            Intent data=new Intent(getActivity(), EntityActivity.class);
-            data.putExtra("course", subject);
-            data.putExtra("label", keyword);
-            startActivity(data);
-        }
-        public void updateDrawState(TextPaint ds){
-            ds.setColor(Color.BLUE);
-            ds.setUnderlineText(true);
-        }
-    }
+    private RelativeLayout exploreLink;
+    private RelativeLayout exploreQuestionRecommend;
 
     public ExploreFragment() {
 
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,162 +72,15 @@ public class ExploreFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_explore, container, false);
-        subjectList = new ArrayList<Item>();
-        subjectList.add(new Item("语文"));
-        subjectList.add(new Item("数学"));
-        subjectList.add(new Item("英语"));
-        subjectList.add(new Item("物理"));
-        subjectList.add(new Item("化学"));
-        subjectList.add(new Item("生物"));
-        subjectList.add(new Item("政治"));
-        subjectList.add(new Item("历史"));
-        subjectList.add(new Item("地理"));
-        recyclerView = view.findViewById(R.id.subjects);
-        radapter = new ExploreFragment.Recycler1(subjectList);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(radapter);
-        linkInput = view.findViewById(R.id.link_input);
-        linkOutput = view.findViewById(R.id.link_output);
-        linkBtn = view.findViewById(R.id.link_btn);
-        myHandler = new MyHandler(getActivity());
-        linkBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchText = linkInput.getText().toString().trim();
-                if(!searchText.equals("")){
-                    //linkInput.setText("");
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
-                    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Message msg = Message.obtain();
-                                HashMap<String, String> hm = new HashMap<String, String>();
-                                hm.put("course", subject);
-                                hm.put("context", searchText);
-                                String sri = HttpUtils.sendPostRequest(hm, "UTF-8", "/api/edukg/linkInstance");
-                                msg.obj = sri;
-                                myHandler.sendMessage(msg);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-                }
+        exploreLink = view.findViewById(R.id.explore_link);
+        exploreQuestionRecommend = view.findViewById(R.id.explore_question_recommend);
+        exploreLink.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view){
+                Intent intent = new Intent(getActivity(), LinkActivity.class);
+                startActivity(intent);
             }
         });
         return view;
-    }
-
-    public class Recycler1 extends RecyclerView.Adapter<ExploreFragment.Recycler1.ViewHolder> {
-
-        private List<Item> mItemList;
-        private int mposition=0;
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            public TextView Name;
-            public ViewHolder(View view) {
-                super(view);
-                Name = (TextView) view.findViewById(R.id.Subject_Label);
-            }
-        }
-
-        public Recycler1(List<Item> ItemList) {
-            mItemList = ItemList;
-        }
-
-        @Override
-        public ExploreFragment.Recycler1.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.subjet_label, parent, false);
-            ExploreFragment.Recycler1.ViewHolder holder = new ExploreFragment.Recycler1.ViewHolder(view);
-            view.setOnClickListener(new View.OnClickListener() {//对加载的子项注册监听事件
-                @Override
-                public void onClick(View v) {
-                    int position = holder.getAdapterPosition();
-
-                    //按钮事件
-                    String sub=mItemList.get(position).getName();
-                    mposition=holder.getAdapterPosition();
-                    switch (sub){
-                        case "语文":
-                            subject="chinese";
-                            break;
-                        case "数学":
-                            subject="math";
-                            break;
-                        case "英语":
-                            subject="english";
-                            break;
-                        case "物理":
-                            subject="physics";
-                            break;
-                        case "化学":
-                            subject="chemistry";
-                            break;
-                        case "生物":
-                            subject="biology";
-                            break;
-                        case "政治":
-                            subject="politics";
-                            break;
-                        case "历史":
-                            subject="history";
-                            break;
-                        case "地理":
-                            subject="geo";
-                            break;
-                        //按钮事件
-                    }notifyDataSetChanged();
-                }
-            });
-            return holder;
-        }
-
-        @Override
-        public void onBindViewHolder(ExploreFragment.Recycler1.ViewHolder holder, int position) {
-            Item item = mItemList.get(position);
-            holder.Name.setText(item.getName());
-            if (mposition != position) {
-                holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
-            }else if (mposition ==  position) {
-                holder.itemView.setBackgroundColor(Color.parseColor("#30B4FF"));
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            return mItemList.size();
-        }
-    }
-
-    private class MyHandler extends Handler {
-        WeakReference<FragmentActivity> reference;
-        public MyHandler(FragmentActivity activity) {
-            reference = new WeakReference<>(activity);
-        }
-        public void handleMessage(Message msg) {
-            String sri = (String) msg.obj;
-            if (sri != "Failed") {
-                try {
-                    JSONObject jo = new JSONObject(sri);
-                    String MSG = jo.get("msg").toString();
-                    if (MSG.equals("成功")) {
-                        response = ((List<Map>) JSONArray.parse(jo.getJSONObject("data").get("results").toString()));
-                        SpannableString output = new SpannableString(searchText);
-                        for(Map map : response){
-                            output.setSpan(new MyClickableSpan((String)map.get("entity")), (int)map.get("start_index"), (int)map.get("end_index") + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-                        linkOutput.setText(output);
-                        linkOutput.setMovementMethod(LinkMovementMethod.getInstance());
-                        linkOutput.setHighlightColor(Color.TRANSPARENT);
-                    }
-                } catch (JSONException e) {
-                }
-            }
-        }
     }
 }
