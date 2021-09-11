@@ -305,8 +305,8 @@ public class DialogFragment extends Fragment {
             if (sri != "Failed") {
                 try {
                     JSONObject jo = new JSONObject(sri);
-                    String MSG = jo.get("msg").toString();
-                    if (MSG.equals("成功")) {
+                    String code=jo.get("code").toString();
+                    if(code.equals("200")){
                         String str = jo.get("data").toString();
                         Map<String, String> map = ((List<Map<String, String>>) JSONArray.parse(jo.get("data").toString())).get(0);
                         if(!map.get("value").equals("")){

@@ -29,14 +29,22 @@ android:layout_height="match_parent"
         android:layout_marginRight="30dp"
         android:layout_gravity= "center_vertical|left"
         >
+        <ImageView
+            android:id="@+id/refresh"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/refresh_icon"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/viewpage"
+            android:layout_marginLeft="40dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical|left"
             android:gravity="center" />
     </RelativeLayout>
+
     <TextView
         android:id="@+id/plus_btn"
         android:layout_width="10dp"
@@ -57,6 +65,7 @@ android:layout_height="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="30dp"
         >
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/subpage"
         android:layout_width="wrap_content"

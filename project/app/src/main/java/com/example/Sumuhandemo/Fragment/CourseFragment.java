@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -58,6 +59,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
     private Recycler adapter;
     private Recycler toadd_adapter;
     private ViewPager SubViewPager;
+    private ImageView refresh;
     private List<Fragment> SubFragments=new ArrayList<>();
 
     public CourseFragment() {
@@ -115,6 +117,16 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(radapter);
+
+
+        refresh=(ImageView) view.findViewById(R.id.refresh);
+        refresh.setAlpha(0.5f);
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SubViewPager.setAdapter(new MyFragmentAdapter(getChildFragmentManager()));
+            }
+        });
 
         setListener(view);
         return view;

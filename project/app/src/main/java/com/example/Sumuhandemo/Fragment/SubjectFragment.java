@@ -10,22 +10,20 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.*;
 import com.example.Sumuhandemo.LoginActivity;
 import com.example.Sumuhandemo.MainActivity;
 import com.example.Sumuhandemo.R;
 import com.example.Sumuhandemo.Fragment.InstanceListFragment;
 import com.example.Sumuhandemo.utils.HttpUtils;
 import com.example.Sumuhandemo.utils.TranslationUtils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -43,7 +41,8 @@ public class SubjectFragment extends Fragment {
     public SubjectFragment(String name) {
         Subject=TranslationUtils.C2E(name);
     }
-
+    public SubjectFragment(){
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,7 +57,6 @@ public class SubjectFragment extends Fragment {
                     Message msg = Message.obtain();
                     HashMap<String ,String> hm=new HashMap<String ,String>();
                     hm.put("course",Subject);
-                    hm.put("searchKey","学");//tobe changed
                     msg.obj=hm;
                     myHandler.handleMessage(msg);
                 } catch (Exception e) {
@@ -77,37 +75,47 @@ public class SubjectFragment extends Fragment {
         }
         public void handleMessage(Message msg) {
             Map<String,String> mp=(HashMap)msg.obj;
-            String sri= HttpUtils.sendGetRequest(mp,"UTF-8","/api/edukg/searchInstance");
+            String sri= HttpUtils.sendGetRequest(mp,"UTF-8","/api/edukg/instanceRecommend");
             if(sri!="Failed"){
                 try {
-                    JSONObject jo = new JSONObject(sri);
-                    String MSG=jo.get("msg").toString();
-                    if(MSG.equals("成功")){
-                        lst = (List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
-                        Map<String ,String> hm=new HashMap<String ,String>();
-                        hm.put("category","没有更多内容了，以后再来试试吧");
-                        hm.put("label","NULL");
-                        hm.put("uri","NULL");
-                        lst.add(hm);
-                        for(int i=0;i<lst.size();i++){
-                            lst.get(i).put("subject",Subject);
-                        }
-                        getChildFragmentManager().beginTransaction().replace(R.id.content,new InstanceListFragment(lst)).commit();
-                        return;
+                    JSONObject jo = (JSONObject) JSONArray.parse(sri);
+                    String code=jo.getString("code");
+                    lst=new ArrayList<>();
+                    List<String> Lst=new ArrayList<>();
+                    if(code.equals("200")) {
+                        Lst=(List<String>) JSONArray.parse(jo.getString("data"));
                     }
-                    else if(MSG.equals("请求异常")){
-                        lst=new ArrayList<>();
+
+                    for(int i=0;i<Lst.size();i++){
                         Map<String ,String> hm=new HashMap<String ,String>();
-                        hm.put("category","没有更多内容了，以后再来试试吧");
-                        hm.put("label","NULL");
-                        hm.put("uri","NULL");
-                        lst.add(hm);
-                        for(int i=0;i<lst.size();i++){
-                            lst.get(i).put("subject",Subject);
+                        hm.put("subject",Subject);
+                        String dt=((JSONObject) JSONArray.parse(Lst.get(i))).getString("data");
+                        JSONObject item = (JSONObject) JSONArray.parse(dt);
+                        hm.put("category",item.getString("category"));
+                        hm.put("label",item.getString("label"));
+                        hm.put("uri",item.getString("uri"));
+                        List<JSONObject> property=new ArrayList<>();
+                        hm.put("image","");
+                        if(!item.getString("property").equals("[]")){
+                            property=(List<JSONObject>) JSONArray.parse(item.getString("property"));
+                            for(int j=0;j<property.size();j++){
+                                JSONObject pro=(JSONObject) property.get(j);
+                                if(pro.get("predicateLabel").equals("图片")){
+                                    hm.put("image",pro.getString("object"));
+                                }
+                            }
                         }
-                        getChildFragmentManager().beginTransaction().replace(R.id.content,new InstanceListFragment(lst)).commit();
-                        return;
+                        lst.add(hm);
                     }
+                    Map<String ,String> hm=new HashMap<String ,String>();
+                    hm.put("category","没有更多内容了，以后再来试试吧");
+                    hm.put("label","NULL");
+                    hm.put("uri","NULL");
+                    hm.put("image","");
+                    hm.put("subject","NULL");
+                    lst.add(hm);
+                    getChildFragmentManager().beginTransaction().replace(R.id.content,new InstanceListFragment(lst)).commit();
+                    return;
                 } catch (JSONException e) {
                 }
             }

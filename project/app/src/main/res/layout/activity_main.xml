@@ -42,7 +42,7 @@
                 android:layout_marginBottom="3dp"
                 android:gravity="center"
                 android:singleLine="true"
-                android:text="课 程"
+                android:text="首 页"
                 android:textColor="#666666"
                 android:textSize="14sp"/>
             <ImageView
@@ -53,7 +53,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="3dp"
                 android:id="@+id/bottom_bar_image_course"
-                android:src="@drawable/main_course_icon"/>
+                android:src="@drawable/main_icon"/>
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/bottom_bar_exercises_btn"
