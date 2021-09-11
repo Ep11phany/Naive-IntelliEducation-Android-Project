@@ -110,11 +110,11 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         myHandler = new MyHandler(this);
         myHandler1 =new MyHandler1(this);
         // init weibo
-        AuthInfo authInfo = new AuthInfo(this, "3464419790", "https://api.weibo.com/oauth2/default.html", "abc123");
+        /*AuthInfo authInfo = new AuthInfo(this, "3464419790", "https://api.weibo.com/oauth2/default.html", "abc123");
         mWeiboAPI = WBAPIFactory.createWBAPI(this);
         mWeiboAPI.registerApp(this, authInfo);
         mWeiboAPI.setLoggerEnable(true);
-        startLoading();
+        startLoading();*/
         new Thread(new Runnable() {
             public void run() {
                 startLoading();
@@ -170,7 +170,6 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
             public void onClick(View v) {
                 if(isFavorite){
                     favorite.setBackground(unfavor);
-
                 }
                 else{
                     favorite.setBackground(favor);
@@ -377,8 +376,8 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
             if(sri!="Failed"){
                 try {
                     JSONObject jo = new JSONObject(sri);
-                    String MSG=jo.get("msg").toString();
-                    if(MSG.equals("成功")){
+                    String code=jo.get("code").toString();
+                    if(code.equals("200")){
                         questionList = (List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
                         getSupportFragmentManager().beginTransaction().replace(R.id.entity_body,new QuestionFragment(questionList)).commit();
                     }
@@ -432,8 +431,8 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
             if (sri != "Failed") {
                 try {
                     JSONObject jo = new JSONObject(sri);
-                    String MSG = jo.get("msg").toString();
-                    if (MSG.equals("Success!")) {
+                    String code=jo.get("code").toString();
+                    if(code.equals("200")){
                         String datastring = jo.get("data").toString();
                         SharedPreferences sp = getSharedPreferences("FavoriteInfo", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();

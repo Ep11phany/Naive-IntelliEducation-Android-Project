@@ -7,6 +7,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class AnalysisUtils {
+    public static void setLoginStatus(Context context,String name){
+        SharedPreferences sp = context.getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();//获取编辑器s
+        editor.putBoolean("isLogin", true);//清除登陆状态
+        editor.putString("loginUserName",name);//清除登陆名
+        editor.commit();//提交修改
+    }
+
     //登陆状态
     public static boolean readLoginStatus(Context context) {
         SharedPreferences sp = context.getSharedPreferences("loginInfo", Context.MODE_PRIVATE);

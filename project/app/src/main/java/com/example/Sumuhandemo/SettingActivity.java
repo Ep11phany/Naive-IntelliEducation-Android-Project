@@ -22,8 +22,7 @@ public class SettingActivity extends AppCompatActivity {
     private TextView tv_main_title;
     private RelativeLayout rl_title_bar;
     private RelativeLayout rl_modiy_pwd;
-    private RelativeLayout rl_security_setting;
-    private RelativeLayout rl_exit_login;
+    private RelativeLayout rl_logout;
     public static SettingActivity instance = null;
 
     @Override
@@ -42,10 +41,25 @@ public class SettingActivity extends AppCompatActivity {
         rl_title_bar = (RelativeLayout) findViewById(R.id.title_bar);
         rl_title_bar.setBackgroundColor(Color.parseColor("#30B4FF"));
         rl_modiy_pwd = (RelativeLayout) findViewById(R.id.rl_modiy_pwd);
+        rl_modiy_pwd = (RelativeLayout) findViewById(R.id.rl_modiy_pwd);
+        rl_logout = (RelativeLayout)findViewById(R.id.logout);
+        rl_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AnalysisUtils.clearLoginStatus(getApplicationContext());
+                Intent data=new Intent();
+                data.putExtra("isLogin",false);
+                setResult(RESULT_OK,data);
+                finish();
+            }
+        });
         tv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SettingActivity.this.finish();
+                Intent data=new Intent();
+                data.putExtra("SelectedStatus",2);
+                setResult(RESULT_OK,data);
+                finish();
             }
         });
         rl_modiy_pwd.setOnClickListener(new View.OnClickListener() {

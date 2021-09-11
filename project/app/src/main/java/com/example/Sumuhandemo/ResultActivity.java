@@ -98,6 +98,9 @@ public class ResultActivity extends AppCompatActivity {
         tv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent data=new Intent();
+                data.putExtra("SelectedStatus",1);
+                setResult(RESULT_OK,data);
                 finish();
             }
         });
@@ -112,7 +115,7 @@ public class ResultActivity extends AppCompatActivity {
                 Collections.sort(lst, new Comparator<Map<String,String>>() {
                     public int compare(Map<String,String> o1, Map<String,String> o2) {
                         Comparator<Object> com = Collator.getInstance(Locale.CHINA);
-                        return  ((Collator) com).compare(o1.get("label").toString(),o2.get("label").toString());
+                        return  ((Collator) com).compare(o1.get("label"),o2.get("label"));
                     };
                 });
                 for(int i=0;i<lst.size();i++){
@@ -128,7 +131,7 @@ public class ResultActivity extends AppCompatActivity {
                 Collections.sort(lst, new Comparator<Map<String,String>>() {
                     public int compare(Map<String,String> o1, Map<String,String> o2) {
                         Comparator<Object> com = Collator.getInstance(Locale.CHINA);
-                        return  ((Collator) com).compare(o2.get("label").toString(),o1.get("label").toString());
+                        return  ((Collator) com).compare(o2.get("label"),o1.get("label"));
                     };
                 });
                 for(int i=0;i<lst.size();i++){
@@ -155,8 +158,8 @@ public class ResultActivity extends AppCompatActivity {
             if (sri != "Failed") {
                 try {
                     JSONObject jo = new JSONObject(sri);
-                    String MSG = jo.get("msg").toString();
-                    if (MSG.equals("成功")) {
+                    String code=jo.get("code").toString();
+                    if(code.equals("200")){
                         String str = jo.get("data").toString();
                         lst = (List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
                         for(int i=0;i<lst.size();i++){

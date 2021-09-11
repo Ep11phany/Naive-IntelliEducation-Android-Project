@@ -243,8 +243,8 @@ public class ExploreFragment extends Fragment {
             if (sri != "Failed") {
                 try {
                     JSONObject jo = new JSONObject(sri);
-                    String MSG = jo.get("msg").toString();
-                    if (MSG.equals("成功")) {
+                    String code=jo.get("code").toString();
+                    if(code.equals("200")){
                         response = ((List<Map>) JSONArray.parse(jo.getJSONObject("data").get("results").toString()));
                         SpannableString output = new SpannableString(searchText);
                         for(Map map : response){

@@ -1,5 +1,6 @@
 package com.example.Sumuhandemo;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -75,6 +76,9 @@ public class FavoriteActivity extends AppCompatActivity {
         tv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent data=new Intent();
+                data.putExtra("SelectedStatus",2);
+                setResult(RESULT_OK,data);
                 FavoriteActivity.this.finish();
             }
         });
@@ -92,8 +96,8 @@ public class FavoriteActivity extends AppCompatActivity {
             if(sri!="Failed"){
                 try {
                     JSONObject jo = new JSONObject(sri);
-                    String MSG=jo.get("msg").toString();
-                    if(MSG.equals("Success!")){
+                    String code=jo.get("code").toString();
+                    if(code.equals("200")){
                         String datastring=jo.get("data").toString();
                         SharedPreferences sp=getSharedPreferences("FavoriteInfo", MODE_PRIVATE);
                         SharedPreferences.Editor editor=sp.edit();
