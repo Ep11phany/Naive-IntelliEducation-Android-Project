@@ -96,7 +96,7 @@
                 android:layout_marginBottom="3dp"
                 android:gravity="center"
                 android:singleLine="true"
-                android:text="发现"
+                android:text="发 现"
                 android:textColor="#666666"
                 android:textSize="14sp"/>
             <ImageView
