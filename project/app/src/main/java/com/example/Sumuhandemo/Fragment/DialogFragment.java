@@ -313,7 +313,7 @@ public class DialogFragment extends Fragment {
                             Dialogs.add(new Pair<String,String>("ai",map.get("value")));
                         }
                         else{
-                            Dialogs.add(new Pair<String,String>("ai","我不知道"));
+                            Dialogs.add(new Pair<String,String>("ai","这个问题我还不知道，请换个问法或者试试其他问题吧！"));
                         }
                         adapter=new Recycler(Dialogs);
                         recyclerView = (RecyclerView) view.findViewById(R.id.dialogs);
@@ -326,6 +326,16 @@ public class DialogFragment extends Fragment {
                     }
                 } catch (JSONException e) {
                 }
+            }else{
+                Dialogs.add(new Pair<String,String>("ai","网络连接超时，请稍后重试哦！"));
+                adapter=new Recycler(Dialogs);
+                recyclerView = (RecyclerView) view.findViewById(R.id.dialogs);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(adapter);
+                recyclerView.scrollToPosition(Dialogs.size()-1);
+                return;
             }
         }
     }

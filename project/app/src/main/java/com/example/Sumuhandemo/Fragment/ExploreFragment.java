@@ -34,13 +34,13 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.example.Sumuhandemo.EntityActivity;
+import com.example.Sumuhandemo.InputActivity;
 import com.example.Sumuhandemo.LinkActivity;
 import com.example.Sumuhandemo.utils.HttpUtils;
 import com.example.Sumuhandemo.MainActivity;
 import com.example.Sumuhandemo.utils.AnalysisUtils;
 import com.example.Sumuhandemo.R;
 import com.example.Sumuhandemo.bean.Item;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,6 +75,15 @@ public class ExploreFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_explore, container, false);
         exploreLink = view.findViewById(R.id.explore_link);
         exploreQuestionRecommend = view.findViewById(R.id.explore_question_recommend);
+        exploreQuestionRecommend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent data=new Intent(getActivity(), InputActivity.class);
+                getActivity().setResult(getActivity().RESULT_OK,data);
+                //跳转到主界面，登录成功的状态传递到 MainActivity 中
+                getActivity().startActivity(data);
+            }
+        });
         exploreLink.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
                 Intent intent = new Intent(getActivity(), LinkActivity.class);

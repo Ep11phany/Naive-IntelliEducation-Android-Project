@@ -89,6 +89,7 @@
                 android:textSize="20sp" />
         </RelativeLayout>
     </LinearLayout>
+
     <View
         android:id="@+id/loading_block"
         android:layout_width="match_parent"
