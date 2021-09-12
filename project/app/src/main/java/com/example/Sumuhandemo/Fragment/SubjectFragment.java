@@ -37,6 +37,8 @@ public class SubjectFragment extends Fragment {
     public View view;
     public String Subject;
     private MyHandler myHandler;
+    private View loading_block;
+    private com.wang.avi.AVLoadingIndicatorView loading_icon;
     private List<Map<String,String>> lst;
     public SubjectFragment(String name) {
         Subject=TranslationUtils.C2E(name);
@@ -50,9 +52,12 @@ public class SubjectFragment extends Fragment {
         // Inflate the layout for this fragment
         view=inflater.inflate(R.layout.fragment_subject, container, false);
         myHandler=new MyHandler(getActivity());
+        loading_block = view.findViewById(R.id.loading_block);
+        loading_icon = view.findViewById(R.id.loading_icon);
         new Thread(new Runnable() {
             @Override
             public void run() {
+                startLoading();
                 try{
                     Message msg = Message.obtain();
                     HashMap<String ,String> hm=new HashMap<String ,String>();
@@ -62,6 +67,7 @@ public class SubjectFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                endLoading();
             }
         }).start();
         return view;
@@ -120,5 +126,26 @@ public class SubjectFragment extends Fragment {
                 }
             }
         }
+    }
+    private void startLoading(){
+        getActivity().runOnUiThread(new Runnable() {
+                          @Override
+                          public void run() {
+                              loading_block.setVisibility(View.VISIBLE);
+                              loading_icon.setVisibility(View.VISIBLE);
+                          }
+                      }
+        );
+    }
+
+    private void endLoading(){
+        getActivity().runOnUiThread(new Runnable() {
+                          @Override
+                          public void run() {
+                              loading_block.setVisibility(View.GONE);
+                              loading_icon.setVisibility(View.GONE);
+                          }
+                      }
+        );
     }
 }
