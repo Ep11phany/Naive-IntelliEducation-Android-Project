@@ -191,7 +191,7 @@ public class ExamActivity extends AppCompatActivity {
                 try {
                     JSONObject jo = new JSONObject(sri);
                     String code = jo.get("code").toString();
-                    if (code.equals("200")) {
+                    if (code.equals("200") || code.equals("0")) {
                         Looper.prepare();
                         Toast.makeText(ExamActivity.this, "添加成功！", Toast.LENGTH_LONG).show();
                         Looper.loop();

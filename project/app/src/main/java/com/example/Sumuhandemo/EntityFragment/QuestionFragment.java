@@ -45,7 +45,7 @@ public class QuestionFragment extends Fragment {
     private QuestionFragment.QuestionAdapter adapter;
     public View view;
 
-    public QuestionFragment(){}
+    public QuestionFragment(){questionList = new ArrayList<>();}
     public QuestionFragment(List<Map> qList) {questionList = qList;}
 
     public class QuestionAdapter extends RecyclerView.Adapter<QuestionFragment.QuestionAdapter.ViewHolder> {

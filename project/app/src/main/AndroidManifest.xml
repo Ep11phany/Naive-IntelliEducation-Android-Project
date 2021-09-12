@@ -52,5 +52,6 @@
       <activity android:name=".HistoryActivity"></activity>
       <activity android:name=".LinkActivity"></activity>
       <activity android:name=".ExamActivity"></activity>
+      <activity android:name=".NotebookActivity"></activity>
     </application>
 </manifest>

@@ -159,7 +159,7 @@ public class ResultActivity extends AppCompatActivity {
                 try {
                     JSONObject jo = new JSONObject(sri);
                     String code=jo.get("code").toString();
-                    if(code.equals("200")){
+                    if(code.equals("200") || code.equals("0")){
                         String str = jo.get("data").toString();
                         lst = (List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
                         for(int i=0;i<lst.size();i++){
