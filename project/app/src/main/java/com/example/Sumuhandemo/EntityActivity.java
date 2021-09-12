@@ -183,7 +183,10 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         tv_back_entity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EntityActivity.this.finish();
+                Intent data=new Intent();
+                data.putExtra("","");
+                setResult(RESULT_OK,data);
+                finish();
             }
         });
         title_bar = findViewById(R.id.entity_title_bar);

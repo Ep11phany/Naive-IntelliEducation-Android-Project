@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -149,10 +150,7 @@ public class InstanceListFragment extends Fragment {
                         }).start();
                         holder.Label.setTextColor(Color.parseColor("#AAAAAA"));
                         holder.Catagory.setTextColor(Color.parseColor("#AAAAAA"));
-                        //销毁登录界面
-                        //?activity.finish();
-                        //跳转到主界面，登录成功的状态传递到 MainActivity 中
-                        activity.startActivity(data);
+                        activity.startActivityForResult(data, activity.RESULT_OK);
                     }
 
                 }
@@ -241,6 +239,7 @@ public class InstanceListFragment extends Fragment {
             return;
         im.setImageBitmap(bitmap);
     }
+
 
 
 
