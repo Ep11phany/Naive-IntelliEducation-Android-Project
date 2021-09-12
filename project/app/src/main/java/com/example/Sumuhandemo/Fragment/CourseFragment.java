@@ -125,7 +125,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onClick(View view) {
                 SubViewPager.setAdapter(new MyFragmentAdapter(getChildFragmentManager()));
-                SubViewPager.setCurrentItem(radapter.mposition);
             }
         });
 

@@ -68,7 +68,6 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
 
     private MyHandler myHandler;
     private MyHandler1 myHandler1;
-    private MyHandler2 myHandler2;
 
     private View loading_block;
     private com.wang.avi.AVLoadingIndicatorView loading_icon;
@@ -110,9 +109,7 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         init();
         myHandler = new MyHandler(this);
         myHandler1 =new MyHandler1(this);
-        myHandler2=new MyHandler2(this);
               // init weibo
-
         AuthInfo authInfo = new AuthInfo(this, "3464419790", "https://api.weibo.com/oauth2/default.html", "abc123");
         mWeiboAPI = WBAPIFactory.createWBAPI(this);
         mWeiboAPI.registerApp(this, authInfo);
@@ -141,25 +138,6 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
               }
           }).start();
         }
-
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    Message msg = Message.obtain();
-                    HashMap<String ,String> hm=new HashMap<String ,String>();
-                    hm.put("name",AnalysisUtils.readLoginUserName(getApplicationContext()));
-                    hm.put("instance",label);
-                    hm.put("subject",course);
-                    msg.obj=hm;
-                    myHandler2.handleMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
     }
 
 
@@ -183,10 +161,7 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         tv_back_entity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent data=new Intent();
-                data.putExtra("","");
-                setResult(RESULT_OK,data);
-                finish();
+                EntityActivity.this.finish();
             }
         });
         title_bar = findViewById(R.id.entity_title_bar);
@@ -510,18 +485,6 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                 } catch (JSONException e) {
                 }
             }
-        }
-    }
-
-
-    private class MyHandler2 extends Handler {
-        WeakReference<FragmentActivity> reference;
-        public MyHandler2(FragmentActivity activity) {
-            reference = new WeakReference<>(activity);
-        }
-        public void handleMessage(Message msg) {
-            Map<String,String> mp=(HashMap)msg.obj;
-            String sri= HttpUtils.sendGetRequest(mp,"UTF-8","/api/user/addHistory");
         }
     }
 }

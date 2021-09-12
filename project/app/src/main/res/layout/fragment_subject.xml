@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
 <LinearLayout
     android:id="@+id/content"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -11,19 +6,4 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical">
-
 </LinearLayout>
-    <View
-    android:id="@+id/loading_block"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:alpha="0.5"
-    android:background="#DDDDDD" />
-    <com.wang.avi.AVLoadingIndicatorView
-        android:id="@+id/loading_icon"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible"
-        android:padding="150dp"
-        />
-</RelativeLayout>
