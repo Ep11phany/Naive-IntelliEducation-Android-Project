@@ -39,17 +39,18 @@ import java.util.Iterator;
 import java.util.Map;
 import com.alibaba.fastjson.*;
 public class QuestionFragment extends Fragment {
-    private List<Map<String,String>> questionList;
+    private List<Map> questionList;
 
     private RecyclerView questionView;
     private QuestionFragment.QuestionAdapter adapter;
     public View view;
 
-    public QuestionFragment(List<Map<String, String>> qList) {questionList = qList;}
+    public QuestionFragment(){}
+    public QuestionFragment(List<Map> qList) {questionList = qList;}
 
     public class QuestionAdapter extends RecyclerView.Adapter<QuestionFragment.QuestionAdapter.ViewHolder> {
 
-        private List<Map<String,String>> qList;
+        private List<Map> qList;
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public TextView questionBody;
@@ -61,7 +62,7 @@ public class QuestionFragment extends Fragment {
             }
         }
 
-        public QuestionAdapter(List<Map<String, String>> q) {
+        public QuestionAdapter(List<Map> q) {
             qList = q;
         }
 
@@ -74,16 +75,18 @@ public class QuestionFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(QuestionFragment.QuestionAdapter.ViewHolder holder, int position) {
-            String body = qList.get(position).get("qBody");
+            String body = (String)qList.get(position).get("qBody");
             holder.questionBody.setText(body);
-            String answer = qList.get(position).get("qAnswer");
+            String answer = (String)qList.get(position).get("qAnswer");
             holder.questionAnswer.setText(answer);
+            Long id = new Long((Integer)qList.get(position).get("id"));
             holder.questionBody.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getActivity(), ExamActivity.class);
                     intent.putExtra("qBody", body);
                     intent.putExtra("qAnswer", answer);
+                    intent.putExtra("qId", id);
                     startActivity(intent);
                 }
             });

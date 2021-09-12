@@ -95,7 +95,7 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
 
     List<Map<String, String>> propertyList;
     List<Map<String, String>> relationshipList;
-    List<Map<String, String>> questionList;
+    List<Map> questionList;
     private IWBAPI mWeiboAPI;
 
     protected void onCreate(Bundle savedInstanceState){
@@ -118,9 +118,11 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
 
         SharedPreferences sp = getSharedPreferences(course+"_"+label, MODE_PRIVATE);
         if(sp.contains("property") && sp.contains("content")){
+            startLoading();
             propertyList = (List<Map<String, String>>) JSONArray.parse(sp.getString("property", "nothing"));
             relationshipList = (List<Map<String, String>>) JSONArray.parse(sp.getString("content", "nothing"));
             setSelectStatus(0);
+            endLoading();
         }
         else{
           new Thread(new Runnable() {
@@ -334,7 +336,7 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                     SharedPreferences sp = getSharedPreferences(course+"_"+label+"_questions", MODE_PRIVATE);
                     if(sp.contains("questions")){
                         startLoading();
-                        questionList = (List<Map<String, String>>) JSONArray.parse(sp.getString("questions", "nothing"));
+                        questionList = (List<Map>) JSONArray.parse(sp.getString("questions", "nothing"));
                         getSupportFragmentManager().beginTransaction().replace(R.id.entity_body,new QuestionFragment(questionList)).commit();
                         endLoading();
                     }
@@ -403,7 +405,7 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
                     JSONObject jo = new JSONObject(sri);
                     String code=jo.get("code").toString();
                     if(code.equals("200")){
-                        questionList = (List<Map<String, String>>) JSONArray.parse(jo.get("data").toString());
+                        questionList = (List<Map>) JSONArray.parse(jo.get("data").toString());
                         SharedPreferences sp = getSharedPreferences(course+"_"+label+"_questions", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putString("questions", jo.get("data").toString());

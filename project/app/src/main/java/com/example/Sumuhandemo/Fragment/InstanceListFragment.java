@@ -50,6 +50,7 @@ public class InstanceListFragment extends Fragment {
     public View view;
     private MyHandler myHandler;
     public Bitmap bitmap;
+    public InstanceListFragment(){instanceList = new ArrayList<>();}
     public InstanceListFragment(List l) {
         instanceList=l;
     }
