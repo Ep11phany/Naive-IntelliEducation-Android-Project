@@ -103,7 +103,8 @@ public class HttpUtils {
             conn.setConnectTimeout(5000);
             conn.setRequestMethod("GET");
             int responseCode = conn.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
+            //if (responseCode == HttpURLConnection.HTTP_OK) {
+            if(true){
                 InputStream inputStream = conn.getInputStream();
                 String result = is2String(inputStream, "UTF-8");//将流转换为字符串。
                 return result;

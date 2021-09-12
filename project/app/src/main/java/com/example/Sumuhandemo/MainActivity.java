@@ -332,7 +332,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 try {
                     JSONObject jo = new JSONObject(sri);
                     String code=jo.get("code").toString();
-                    if(code.equals("200")){
+                    if(code.equals("200") || code.equals("0")){
                         String datastring = jo.get("data").toString();
                         SharedPreferences sp = getSharedPreferences("FavoriteInfo", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();

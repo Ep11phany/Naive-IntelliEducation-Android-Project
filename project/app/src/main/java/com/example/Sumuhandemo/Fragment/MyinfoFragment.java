@@ -17,6 +17,7 @@ import com.example.Sumuhandemo.SettingActivity;
 import com.example.Sumuhandemo.utils.AnalysisUtils;
 import com.example.Sumuhandemo.FavoriteActivity;
 import com.example.Sumuhandemo.HistoryActivity;
+import com.example.Sumuhandemo.NotebookActivity;
 
 public class MyinfoFragment extends Fragment {
 
@@ -26,6 +27,7 @@ public class MyinfoFragment extends Fragment {
     private RelativeLayout rl_course_history;
     private RelativeLayout rl_setting;
     private RelativeLayout rl_favorite;
+    private RelativeLayout rl_notebook;
     //private Context mContext;
 
     @Override
@@ -44,6 +46,7 @@ public class MyinfoFragment extends Fragment {
         rl_course_history = (RelativeLayout) view.findViewById(R.id.rl_course_history);
         rl_favorite = (RelativeLayout) view.findViewById(R.id.rl_favorite);
         rl_setting = (RelativeLayout) view.findViewById(R.id.rl_setting);
+        rl_notebook = view.findViewById(R.id.rl_notebook);
         setLoginParams(AnalysisUtils.readLoginStatus(getActivity()));
         rl_course_history.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +68,13 @@ public class MyinfoFragment extends Fragment {
             public void onClick(View view) {
                     Intent intent = new Intent(getActivity(), FavoriteActivity.class);
                     getActivity().startActivityForResult(intent, 1);
+            }
+        });
+        rl_notebook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), NotebookActivity.class);
+                getActivity().startActivityForResult(intent, 1);
             }
         });
     }

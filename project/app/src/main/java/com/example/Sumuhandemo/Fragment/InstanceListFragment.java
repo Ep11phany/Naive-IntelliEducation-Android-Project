@@ -50,6 +50,7 @@ public class InstanceListFragment extends Fragment {
     public View view;
     private MyHandler myHandler;
     public Bitmap bitmap;
+    public InstanceListFragment(){instanceList = new ArrayList<>();}
     public InstanceListFragment(List l) {
         instanceList=l;
     }
@@ -261,7 +262,7 @@ public class InstanceListFragment extends Fragment {
                 try {
                     JSONObject jo = new JSONObject(sri);
                     String code=jo.get("code").toString();
-                    if(code.equals("200")){
+                    if(code.equals("200") || code.equals("0")){
                         String datastring=jo.get("data").toString();
                         SharedPreferences sp=getActivity().getSharedPreferences("HistoryInfo", MODE_PRIVATE);
                         SharedPreferences.Editor editor=sp.edit();

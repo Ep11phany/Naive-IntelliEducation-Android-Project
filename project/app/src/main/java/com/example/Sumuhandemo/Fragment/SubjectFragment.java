@@ -82,7 +82,7 @@ public class SubjectFragment extends Fragment {
                     String code=jo.getString("code");
                     lst=new ArrayList<>();
                     List<String> Lst=new ArrayList<>();
-                    if(code.equals("200")) {
+                    if(code.equals("200") || code.equals("0")) {
                         Lst=(List<String>) JSONArray.parse(jo.getString("data"));
                     }
 
