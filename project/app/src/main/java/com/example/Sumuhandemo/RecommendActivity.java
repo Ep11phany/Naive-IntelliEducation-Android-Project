@@ -46,7 +46,7 @@ public class RecommendActivity extends AppCompatActivity {
     private AppCompatActivity activity=this;
     private View view;
     private MyHandler myHandler;
-    private List<Map<String,String>> response;
+    private List<Map> response;
     private TextView tv_main_title;
     private TextView tv_back;
     private RelativeLayout title_bar;
@@ -105,7 +105,7 @@ public class RecommendActivity extends AppCompatActivity {
                     JSONObject jo = new JSONObject(sri);
                     String code = jo.get("code").toString();
                     if (code.equals("0")||code.equals("200")) {
-                        response = ((List<Map<String,String>>) JSONArray.parse(jo.get("data").toString()));
+                        response = ((List<Map>) JSONArray.parse(jo.get("data").toString()));
                         getSupportFragmentManager().beginTransaction().replace(R.id.body, new QuestionFragment(response)).commit();
                     }
                 } catch (JSONException e) {

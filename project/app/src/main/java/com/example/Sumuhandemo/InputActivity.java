@@ -47,9 +47,7 @@ public class InputActivity extends AppCompatActivity {
     private String searchText;
     private EditText Input;
     private Button Btn;
-    private MyHandler myHandler;
     private String subject = "chinese";
-    private List<Map<String,String>> response;
     private TextView tv_main_title;
     private TextView tv_back;
     private RelativeLayout title_bar;
@@ -79,7 +77,6 @@ public class InputActivity extends AppCompatActivity {
         Input = findViewById(R.id.input);
 
         Btn = findViewById(R.id.btn);
-        myHandler = new MyHandler(this);
         Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,27 +94,5 @@ public class InputActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-
-    private class MyHandler extends Handler {
-        WeakReference<Activity> reference;
-        public MyHandler(Activity activity) {
-            reference = new WeakReference<>(activity);
-        }
-        public void handleMessage(Message msg) {
-            String sri = (String) msg.obj;
-            if (sri != "Failed") {
-                try {
-                    JSONObject jo = new JSONObject(sri);
-                    String code = jo.get("code").toString();
-                    if (code.equals("0")||code.equals("200")) {
-                        response = ((List<Map<String,String>>) JSONArray.parse(jo.get("data").toString()));
-
-                    }
-                } catch (JSONException e) {
-                }
-            }
-        }
     }
 }
