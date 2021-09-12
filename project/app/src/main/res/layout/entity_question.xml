@@ -11,7 +11,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_gravity= "center_vertical|left"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"
         >
         <androidx.recyclerview.widget.RecyclerView
@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="45dp"
             android:gravity="center" />
     </RelativeLayout>
 </LinearLayout>

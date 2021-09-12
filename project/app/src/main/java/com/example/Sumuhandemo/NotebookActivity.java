@@ -2,12 +2,14 @@ package com.example.Sumuhandemo;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.provider.ContactsContract;
 import android.text.SpannableString;
@@ -18,9 +20,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -68,11 +73,13 @@ public class NotebookActivity extends AppCompatActivity {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public TextView questionBody;
-            public TextView questionAnswer;
+            public Button notebookDo;
+            public Button notebookDelete;
             public ViewHolder(View view) {
                 super(view);
                 questionBody = (TextView) view.findViewById(R.id.question_body);
-                questionAnswer = (TextView) view.findViewById(R.id.question_answer);
+                notebookDo = view.findViewById(R.id.notebook_do);
+                notebookDelete = view.findViewById(R.id.notebook_delete);
             }
         }
 
@@ -92,9 +99,8 @@ public class NotebookActivity extends AppCompatActivity {
             String body = (String)qList.get(position).get("qBody");
             holder.questionBody.setText(body);
             String answer = (String)qList.get(position).get("qAnswer");
-            holder.questionAnswer.setText(answer);
             Long id = new Long((Integer)qList.get(position).get("questionID"));
-            holder.questionBody.setOnClickListener(new View.OnClickListener() {
+            holder.notebookDo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(NotebookActivity.this, ExamActivity.class);
@@ -102,6 +108,34 @@ public class NotebookActivity extends AppCompatActivity {
                     intent.putExtra("qAnswer", answer);
                     intent.putExtra("qId", id);
                     startActivity(intent);
+                }
+            });
+            holder.notebookDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(NotebookActivity.this);
+                    alertdialogbuilder.setMessage("确定将这道题移出错题本吗？");
+                    alertdialogbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Message msg = Message.obtain();
+                                    HashMap hm = new HashMap();
+                                    hm.put("questionID", id.toString());
+                                    hm.put("name", AnalysisUtils.readLoginUserName(NotebookActivity.this));
+                                    String sri = HttpUtils.sendGetRequest(hm, "UTF-8", "/api/user/deleteQuestion");
+                                    msg.obj = sri;
+                                    myHandler.deleteQuestion(msg, position);
+                                }
+                            }).start();
+                            //Toast.makeText(ExamActivity.this, "yes"+qId, Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    alertdialogbuilder.setNeutralButton("取消", null);
+                    final AlertDialog alertdialog1 = alertdialogbuilder.create();
+                    alertdialog1.show();
                 }
             });
         }
@@ -164,6 +198,31 @@ public class NotebookActivity extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                 }
+            }
+        }
+        public void deleteQuestion(Message msg, int position) {
+            String sri = (String) msg.obj;
+            if (sri != "Failed") {
+                try {
+                    JSONObject jo = new JSONObject(sri);
+                    String code = jo.get("code").toString();
+                    if (code.equals("200") || code.equals("0")) {
+                        Looper.prepare();
+                        Toast.makeText(NotebookActivity.this, "删除成功！", Toast.LENGTH_LONG).show();
+                        Looper.loop();
+                    }
+                    else if(code.equals("404")){
+                        Looper.prepare();
+                        Toast.makeText(NotebookActivity.this, "这道题已经被移出错题本啦！", Toast.LENGTH_LONG).show();
+                        Looper.loop();
+                    }
+                } catch (JSONException e) {
+                }
+            }
+            else{
+                Looper.prepare();
+                Toast.makeText(NotebookActivity.this, sri, Toast.LENGTH_LONG).show();
+                Looper.loop();
             }
         }
     }

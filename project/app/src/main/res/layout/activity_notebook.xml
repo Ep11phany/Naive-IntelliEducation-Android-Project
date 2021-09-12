@@ -14,7 +14,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
+            android:background="#F2F2F2"
             android:orientation="vertical">
             <!--放置Fragment的main_body-->
                     <RelativeLayout
@@ -22,7 +22,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center_vertical|left"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="55dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginBottom="5dp"
                         android:layout_weight="1">

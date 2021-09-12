@@ -112,11 +112,11 @@ public class EntityActivity extends FragmentActivity implements View.OnClickList
         myHandler1 =new MyHandler1(this);
         myHandler2=new MyHandler2(this);
               // init weibo
-
         AuthInfo authInfo = new AuthInfo(this, "3464419790", "https://api.weibo.com/oauth2/default.html", "abc123");
         mWeiboAPI = WBAPIFactory.createWBAPI(this);
         mWeiboAPI.registerApp(this, authInfo);
         mWeiboAPI.setLoggerEnable(true);
+
         startLoading();
 
         SharedPreferences sp = getSharedPreferences(course+"_"+label, MODE_PRIVATE);

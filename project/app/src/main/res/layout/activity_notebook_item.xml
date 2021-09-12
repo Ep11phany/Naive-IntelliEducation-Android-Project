@@ -21,17 +21,24 @@
             android:text="123"
             android:textSize="15dp"
             android:gravity="left"/>
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/question_answer"
-            android:padding="5dp"
-            android:layout_weight="1"
-            android:textColor="#000000"
-            android:text="321"
-            android:textSize="15dp"
-            android:gravity="left"
-            />
+
+            android:gravity="center">
+            <Button
+                android:id="@+id/notebook_do"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:text="做题"/>
+            <Button
+                android:id="@+id/notebook_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:text="删除"/>
+        </LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
