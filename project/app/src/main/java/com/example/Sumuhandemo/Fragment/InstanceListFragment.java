@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -140,8 +141,6 @@ public class InstanceListFragment extends Fragment {
                                     Message msg = Message.obtain();
                                     HashMap<String ,String> hm=new HashMap<String ,String>();
                                     hm.put("name",AnalysisUtils.readLoginUserName(getActivity().getApplicationContext()));
-                                    hm.put("instance",instanceList.get(position).get("label"));
-                                    hm.put("subject",instanceList.get(position).get("subject"));
                                     msg.obj=hm;
                                     myHandler.handleMessage(msg);
                                 } catch (Exception e) {
@@ -151,10 +150,7 @@ public class InstanceListFragment extends Fragment {
                         }).start();
                         holder.Label.setTextColor(Color.parseColor("#AAAAAA"));
                         holder.Catagory.setTextColor(Color.parseColor("#AAAAAA"));
-                        //销毁登录界面
-                        //?activity.finish();
-                        //跳转到主界面，登录成功的状态传递到 MainActivity 中
-                        activity.startActivity(data);
+                        activity.startActivityForResult(data, activity.RESULT_OK);
                     }
 
                 }
@@ -227,7 +223,7 @@ public class InstanceListFragment extends Fragment {
                 try {
                     URL httpUrl = new URL(url);
                     HttpURLConnection conn = (HttpURLConnection) httpUrl.openConnection();
-                    conn.setConnectTimeout(6000);
+                    conn.setConnectTimeout(3000);
                     conn.setDoInput(true);
                     conn.setUseCaches(false);
                     InputStream in = conn.getInputStream();
@@ -239,10 +235,11 @@ public class InstanceListFragment extends Fragment {
             }
         };
         new Thread(networkImg).start();
-        while(bitmap == null)
-            continue;
+        if(bitmap == null)
+            return;
         im.setImageBitmap(bitmap);
     }
+
 
 
 
@@ -253,10 +250,7 @@ public class InstanceListFragment extends Fragment {
         }
         public void handleMessage(Message msg) {
             Map<String,String> mp=(HashMap)msg.obj;
-            String sri= HttpUtils.sendGetRequest(mp,"UTF-8","/api/user/addHistory");
-            Map<String ,String> mp1=new HashMap<>();
-            mp1.put("name",AnalysisUtils.readLoginUserName(getActivity().getApplicationContext()));
-            sri= HttpUtils.sendGetRequest(mp1,"UTF-8","/api/user/showHistory");
+            String sri= HttpUtils.sendGetRequest(mp,"UTF-8","/api/user/showHistory");
             //发送历史记录信息
             if(sri!="Failed"){
                 try {

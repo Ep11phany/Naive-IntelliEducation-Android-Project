@@ -66,6 +66,25 @@ public class FavoriteActivity extends AppCompatActivity {
         }).start();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Message msg = Message.obtain();
+                    HashMap<String ,String> hm=new HashMap<String ,String>();
+                    hm.put("name",AnalysisUtils.readLoginUserName(getApplicationContext()));
+                    msg.obj=hm;
+                    myHandler.handleMessage(msg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 
     private void init() {
         tv_back = (TextView) findViewById(R.id.tv_back);
